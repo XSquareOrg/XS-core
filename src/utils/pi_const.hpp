@@ -19,9 +19,9 @@
 
 namespace XS_CORE {
 
-#define PI =         3.141592653;
-#define PI_OVER_180 = 0.017453292;     // PI/180
-#define PI_UNDER_180 = 57.29577952;    // 180/PI
+#define PI            3.141592653f;
+#define PI_OVER_180   0.017453292f;     // PI/180
+#define PI_UNDER_180  57.29577952f;    // 180/PI
 
 } // XS_CORE
 #endif // XS_CORE_PI_CONST__

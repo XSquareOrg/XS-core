@@ -18,6 +18,6 @@
 #ifndef XS_CORE_BUILD__
 #define XS_CORE_BUILD__
 
-#define XS_CORE_VERSION_STRING = "0.0.1"
+#define XS_CORE_VERSION_STRING "0.0.1"
 
 #endif // XS_CORE_BUILD
