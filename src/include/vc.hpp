@@ -23,37 +23,37 @@
 
 namespace XS_CORE {
 
-template <class ITEM_T, class CLS_T>
+template <class ITEM, class T>
 class VC { // Vector container class
 protected:
     virtual ~VC();
-    std::vector<ITEM_T> items;
-    void _del_item(ITEM_T item) {this._del_item_by_idx(this->indexof(item));}
+    std::vector<ITEM> items;
+    void _del_item(ITEM item) {this._del_item_by_idx(this->indexof(item));}
     void _del_item_by_idx(const unsigned i) {
         if (i == 0 || i <= this->size())
             this->items.erase(this->items.begin()+i);
     }
-    void _add_item(ITEM_T &item) {this->items.push_back;}
+    void _add_item(ITEM &item) {this->items.push_back;}
 public:
     inline unsigned size(void) const {return this->items.size();}
     inline bool is_empty(void) {return this->items.size() == 0;}
-    size_t indexof(ITEM_T item) {
+    size_t indexof(ITEM item) {
         // returns -1 if item does not exist
         const unsigned s = this->items.size();
         for (unsigned i=0; i<s; i++)
             if (this->items[i] == item) return i;
         return -1;
     }
-    bool has_item(ITEM_T item) {
+    bool has_item(ITEM item) {
         const unsigned s = this->items.size();
         for (unsigned i=0; i<s; i++)
             if (this->items[i] == item) return true;
         return false;
     }
-    bool operator==(const CLS_T &rhs) {return this->items->operator==(rhs);}
-    bool operator!=(const CLS_T &rhs) {return !this->operator==(rhs);}
-    ITEM_T& operator[](size_t i) {return this->items[i];}
-    const ITEM_T& operator[](size_t i) const {return this->items[i];}
+    bool operator==(const T &rhs) {return this->items->operator==(rhs);}
+    bool operator!=(const T &rhs) {return !this->operator==(rhs);}
+    ITEM& operator[](size_t i) {return this->items[i];}
+    const ITEM& operator[](size_t i) const {return this->items[i];}
 };
 
 } // XS_CORE

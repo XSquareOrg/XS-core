@@ -29,7 +29,7 @@ const char XS_TIME_FMT[20] = "%Y %d %h %D:%M:%S%p";
 class TimeStamp {
 protected:
     time_t ts;
-    static char ts_fmt[30];
+    static char ts_fmt[80];
 public:
     TimeStamp() {
         struct tm * timeinfo;
@@ -39,21 +39,26 @@ public:
         this->ts = strftime(buffer, 80, this->ts_fmt, timeinfo);
     }
     //const char to_char(void);
+
     const std::string to_string(void) const {return ctime(&this->ts);}
     std::string to_string(void) {return ctime(&this->ts);}
     inline bool operator==(const TimeStamp &rhs) {return this->ts == rhs.ts;}
     inline bool operator!=(const TimeStamp &rhs) {return !this->operator==(rhs);}
+
 };
 
 
 class TimeStampProfile {
 protected:
-    TimeStamp &start;
-    TimeStamp &end;
+    TimeStamp start;
+    TimeStamp end;
 public:
-    TimeStampProfile();
-    const TimeStamp start_stamp(void) {return this->start;}
-    const TimeStamp end_stamp(void) {return this->end;}
+    TimeStampProfile() {};
+    TimeStampProfile(TimeStamp t) {this->start = t;}
+    void set_start_now(void) {this->start = (*new TimeStamp());}
+    void set_end_now(void) {this->end = (*new TimeStamp());}
+    const TimeStamp get_start_stamp(void) {return this->start;}
+    const TimeStamp get_end_stamp(void) {return this->end;}
     //time_t difference(void);
 };
 

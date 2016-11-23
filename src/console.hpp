@@ -42,9 +42,7 @@ protected:
     TimeStamp ts;
 public:
     Message(const char msgtype, const std::string message) {
-        TimeStamp *t = new TimeStamp();
-        this->ts = *t;
-        delete t;
+        this->ts = (*new TimeStamp());
         this->msgtype = msgtype;
         this->msg = message;
     }
@@ -71,32 +69,17 @@ public:
     const TimeStamp &last_timestamp(void) {return this->items.back().timestamp();}
     const Message &last(void) {return this->items.back();}
     void log(const char msgtype, const std::string msg) {
-        if (msg.size() > 0) {
-            const Message *t = new Message(msgtype, msg);
-            this->append(*t);
-            delete t;
-        } else if (msgtype == MSGTYPES::SEPARATOR) {
-            const Message *t = new Message(MSGTYPES::SEPARATOR, "");
-            this->append(*t);
-            delete t;
-        }
+        if (msg.size() > 0) this->append((*new Message(msgtype, msg)));
+        else if (msgtype == MSGTYPES::SEPARATOR) this->add_seperator();
     }
     void log_and_print(const char msgtype, const std::string msg) {
         if (msg.size() > 0) {
-            const Message *t = new Message(msgtype, msg);
-            this->append(*t);
+            this->append((*new Message(msgtype, msg)));
             std::cout << msg;
-            delete t;
-        } else if (msgtype == MSGTYPES::SEPARATOR) {
-            const Message *t = new Message(MSGTYPES::SEPARATOR, "");
-            this->append(*t);
-            delete t;
-        }
+        } else if (msgtype == MSGTYPES::SEPARATOR) this->add_seperator();
     }
     void add_seperator(void) {
-        const Message *t = new Message(MSGTYPES::SEPARATOR, "");
-        this->append(*t);
-        delete t;
+        this->append((*new Message(MSGTYPES::SEPARATOR, "")));
     }
     Message &operator[] (unsigned i) {
         if (i < 0) i = this->size() - i;

@@ -39,17 +39,13 @@ public:
     void set_axis(unsigned axis) {
         if (axis >= 0 || axis <= 2) this->_axis = axis;
     }
-    void invert(void) {
-        this->_invert = (this-_invert) ? false : true;
-    }
+    void invert(void) {this->_invert = (this-_invert) ? false : true;}
     bool operator==(UpAxis &rhs) {
         return (this->_invert == rhs._invert && this->_axis == rhs._axis);
     }
     bool operator!=(UpAxis &rhs) {return !this->operator==(rhs);}
-    operator int(void) {
-        return (this->_invert) ? -this->_axis : this->_axis;
-    }
-    operator unsigned(void) {return this->_axis;} // works like abs
+    operator int(void) {return (this->_invert) ? -this->_axis : this->_axis;}
+    operator unsigned(void) {return this->_axis;} // like abs/for index
     operator const char*(void) const{
         if (this->_invert) {
             if (this->_axis == 1) {
