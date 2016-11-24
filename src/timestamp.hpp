@@ -15,8 +15,8 @@
 * ------------------------------------------------------------------------- */
 
 
-#ifndef TIMESTAMP__
-#define TIMESTAMP__
+#ifndef XS_CORE_TIMESTAMP__
+#define XS_CORE_TIMESTAMP__
 
 #include <string>
 #include <ctime>
@@ -63,4 +63,4 @@ public:
 };
 
 } // XS_CORE
-#endif // TIMESTAMP__
+#endif // XS_CORE_TIMESTAMP__
