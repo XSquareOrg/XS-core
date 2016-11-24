@@ -18,6 +18,7 @@
 #define XS_CORE_MM4__
 
 #include "mm3and4com.hpp"
+
 namespace XS_CORE {
 
 class Vec4f;
@@ -80,6 +81,10 @@ public:
         __m128 m = _mm_set_ps(this->data);
         this->data = _mm_shuffle_ps(m, m, _MM_SHUFFLE(z, y, x, w));
         }
+    inline void swizzle(int d[4]) {
+        __m128i m = _mm_set_ps(this->data);
+        this->data = _mm_shuffle_ps(m, m, _MM_SHUFFLE(d[2], d[1], d[0], d[3]));
+    }
     inline void reverse(void) {this->data = _mm_setr_ps(this->data);}
 };
 
@@ -99,7 +104,7 @@ public:
         __m128i m = _mm_set_epi32(this->data);
         this->data = _mm_shuffle_epi32(m, _MM_SHUFFLE(z, y, x, w));
     }
-    inline void swizzle(int d[3]) {
+    inline void swizzle(int d[4]) {
         __m128i m = _mm_set_epi32(this->data);
         this->data = _mm_shuffle_epi32(m, _MM_SHUFFLE(d[2], d[1], d[0], d[3]));
     }
