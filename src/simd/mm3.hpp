@@ -53,9 +53,8 @@ public:
     }
     //inline NUM operator[](int i) const {return *(&x +i);}
     //inline NUM& operator[](int i) {return *(&x +i);}
-
-
 };
+
 
 template <class T>
 class mm128_3: _mm3<float, T>, mm128<T> {
@@ -75,6 +74,10 @@ public:
     inline void swizzle(int x, int y, int z) {
         __m128 m = _mm_set_ps(this->data);
         this->data = _mm_shuffle_ps(m, m, _MM_SHUFFLE(z, y, x, 0));
+    }
+    inline void swizzle(int d[3]) {
+        __m128i m = _mm_set_ps(this->data);
+        this->data = _mm_shuffle_ps(m, m, _MM_SHUFFLE(d[2], d[1], d[0], 0));
     }
     inline void reverse(void) {
         __m128 m = _mm_set_ps(this->data);
@@ -113,7 +116,6 @@ public:
         this->data = _mm_shuffle_epi32(m, _MM_SHUFFLE(2, 1, 0, 3));
     }
 };
-
 
 
 } // XS_CORE
