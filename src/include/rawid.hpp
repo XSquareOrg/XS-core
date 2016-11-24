@@ -66,8 +66,7 @@ public:
         while (1) {
             if (!this->_locked) {
                 this->_locked = true;
-                RawID r;
-                r = RawID(this->_last);
+                RawID r = RawID(this->_last);
                 this->_last++;
                 this->_locked = false;
                 return r;

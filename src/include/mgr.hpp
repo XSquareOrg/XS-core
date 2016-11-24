@@ -42,7 +42,7 @@ class MgrWithRID: public Mgr<ITEM, T> {
 // Only the manager (T) uses an rid
 // - Comparisons are done using rids for speed
 protected:
-    MgrRawID &rid;
+    MgrRawID *rid;
     const unsigned &ID(void) const {return &this->rid.ID();}
 public:
     virtual ~MgrWithRID();
@@ -110,8 +110,8 @@ public:
 template <class T>
 class ObWithRID: public _Ob_BC<T> {
 protected:
-    RawID &rid;
-    const unsigned &ID(void) {return this->rid.ID();}
+    RawID *rid;
+    const unsigned *ID(void) {return this->rid.ID();}
 public:
     ObWithRID();
     virtual ~ObWithRID();
