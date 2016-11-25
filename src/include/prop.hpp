@@ -134,5 +134,6 @@ public:
     const char& operator[](size_t pos) const {return this->data[pos];}
 };
 
+
 } // XS_CORE
 #endif // PROP__

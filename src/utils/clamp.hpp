@@ -46,5 +46,6 @@ bool in_range(const NUM v, const NUM min, const NUM max) {
     return min <= v && v <= max;
 }
 
+
 } // XS_CORE
 #endif // CLAMPMATH__

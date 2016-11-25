@@ -111,7 +111,7 @@ template <class T>
 class ObWithRID: public _Ob_BC<T> {
 protected:
     RawID *rid;
-    const unsigned *ID(void) {return this->rid.ID();}
+    const unsigned &ID(void) {return this->rid.ID();}
 public:
     ObWithRID();
     virtual ~ObWithRID();
