@@ -21,6 +21,7 @@
 #include <string>
 #include <ctime>
 #include <iostream>
+#include <malloc.h>
 
 namespace XS_CORE {
 
@@ -55,8 +56,8 @@ protected:
 public:
     TimeStampProfile() {};
     TimeStampProfile(TimeStamp t) {this->start = t;}
-    void set_start_now(void) {this->start = (* new TimeStamp());}
-    void set_end_now(void) {this->end = (*new TimeStamp());}
+    void set_start_now(void) {this->start = TimeStamp();}
+    void set_end_now(void) {this->end = TimeStamp();}
     const TimeStamp get_start_stamp(void) {return this->start;}
     const TimeStamp get_end_stamp(void) {return this->end;}
     //time_t difference(void);
