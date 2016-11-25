@@ -21,29 +21,20 @@
 
 namespace XS_CORE {
 
-// packing funcs
+// return pack
 template <typename NUM>
 const NUM* packed_2(const NUM x, const NUM y) {
-    NUM* t;
-    t[0] = x;
-    t[1] = y;
+    NUM t[4] = {x, y};
     return t;
 }
 template <typename NUM>
 const NUM* packed_3(const NUM x, const NUM y, const NUM z) {
-    NUM* t;
-    t[0] = x;
-    t[1] = y;
-    t[2] = z;
+    NUM t[4] = {x, y, z};
     return t;
 }
 template <typename NUM>
 const NUM* packed_4(const NUM x, const NUM y, const NUM z, const NUM w) {
-    NUM* t;
-    t[0] = x;
-    t[1] = y;
-    t[2] = z;
-    t[3] = w;
+    NUM t[4] = {x, y, z, w};
     return t;
 }
 
@@ -51,26 +42,17 @@ const NUM* packed_4(const NUM x, const NUM y, const NUM z, const NUM w) {
 // filling funcs
 template <typename NUM>
 const NUM* filled_2(const NUM v) {
-    NUM* t;
-    t[0] = v;
-    t[1] = v;
+    NUM t[2] = {v, v};
     return t;
 }
 template <typename NUM>
 const NUM* filled_3(const NUM v) {
-    NUM* t;
-    t[0] = v;
-    t[1] = v;
-    t[2] = v;
+    NUM t[3] = {v, v, v};
     return t;
 }
 template <typename NUM>
 const NUM* filled_4(const NUM v) {
-    NUM* t;
-    t[0] = v;
-    t[1] = v;
-    t[2] = v;
-    t[3] = v;
+    NUM t[4] = {v, v, v, v,};
     return t;
 }
 
