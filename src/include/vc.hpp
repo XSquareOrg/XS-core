@@ -36,7 +36,7 @@ protected:
     void _add_item(ITEM &item) {this->items.push_back;}
 public:
     inline unsigned size(void) const {return this->items.size();}
-    inline bool is_empty(void) {return this->items.size() == 0;}
+    inline bool is_empty(void) {return this->items.is_empty();}
     size_t indexof(ITEM item) {
         // returns -1 if item does not exist
         const unsigned s = this->items.size();
