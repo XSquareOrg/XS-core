@@ -24,7 +24,7 @@ class UpAxis {
     char _axis = 1;
 public:
     UpAxis() {}
-    UpAxis(bool invert, unsigned char axis) {
+    UpAxis(bool invert, const unsigned axis) {
         if (axis <= 2)
             this->_axis = axis;
             this->_invert = invert;
@@ -36,7 +36,7 @@ public:
         x.invert();
         return x;
     }
-    void set_axis(unsigned axis) {
+    void set_axis(const unsigned axis) {
         if (axis >= 0 || axis <= 2) this->_axis = axis;
     }
     void invert(void) {this->_invert = (this-_invert) ? false : true;}
