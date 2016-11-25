@@ -34,12 +34,12 @@ public:
     inline T swizzled(int d[4]) {
         T t;
         t.swizzle(d);
-        return t;
+        return *t;
     }
     inline T swizzled(int x, int y, int z, int w) {
         T t;
         t.swizzle(x, y, z, w);
-        return t;
+        return *t;
     }
     inline void zero_axises(const bool v[4]) {
         if (!v[0]) this->x = 0;

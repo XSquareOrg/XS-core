@@ -101,7 +101,7 @@ public:
     inline T filled(int n) {
         T t;
         t.data = _mm_set_epi32(n, n, n, 0);
-        return *t;
+        return t;
     }
     inline void swizzle(int x, int y, int z) {
         __m128i m = _mm_set_epi32(this->data);

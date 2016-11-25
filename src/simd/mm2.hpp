@@ -45,12 +45,12 @@ public:
     inline T swizzled(int x, int y) {
         T t;
         t.swizzle(x, y);
-        return *t;
+        return t;
     }
     inline T swizzled(int d[2]) {
         T t;
         t.swizzle(d);
-        return *t;
+        return t;
     }
 };
 
