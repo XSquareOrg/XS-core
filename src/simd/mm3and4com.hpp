@@ -20,14 +20,10 @@
 #define XS_CORE_MM3AND4COM__
 
 #include "mm_basemaths.hpp"
+#include "simd_include.hpp"
 //#include "veclikebase_T.hpp"
 
-#if defined (__MINGW64__)
-    #include <intrin.h>
-#else
-    #include <xmmintrin.h> // sse
-    #include <emmintrin.h> // sse2
-#endif
+
 
 namespace XS_CORE {
 

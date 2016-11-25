@@ -18,6 +18,7 @@
 #define XS_CORE_MM2__
 
 #include "mm_basemaths.hpp"
+#include "simd_include.hpp"
 
 namespace XS_CORE {
 
@@ -58,6 +59,7 @@ public:
 template <class T>
 class mm_2: public _mm2<float, T> {
 public:
+    void fill(const float n);
     inline void swizzle(int d[2]);
     inline void swizzle(int x, int y);
     inline void reverse(void);
@@ -67,6 +69,7 @@ public:
 template <class T>
 class mmi_2: public _mm2<int, T> {
 public:
+    void fill(const float n);
     inline void swizzle(int d[2]);
     inline void swizzle(int x, int y);
     inline void reverse(void);
