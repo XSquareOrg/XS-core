@@ -20,7 +20,7 @@
 
 #include "include/mgr.hpp"
 
-namespace XS_CORE {
+namespace xs_core {
 
 class Event;
 
@@ -79,5 +79,5 @@ public:
 
 //static MgrMgr<Event, EventMgr> eventmanagers = MgrMgr<Event, EventMgr>();
 
-} // XS_CORE
+} // xs_core
 #endif // XS_CORE_EVENT__

@@ -16,7 +16,7 @@
 
 #include "event.hpp"
 
-namespace XS_CORE {
+namespace xs_core {
 
 Event EventMgr::new_evt(void) {
     Event e = Event(*this);
@@ -29,4 +29,4 @@ void EventMgr::cleanup(void) {
     }
 }
 
-} // XS_CORE
+} // xs_core

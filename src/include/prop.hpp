@@ -19,7 +19,7 @@
 
 #include <string>
 
-namespace XS_CORE {
+namespace xs_core {
 
 template <class DATA, class T>
 class T_DataPropBase {
@@ -27,9 +27,9 @@ protected:
     DATA data;
 public:
     virtual ~T_DataPropBase();
-    virtual DATA get(void);
-    inline const DATA get(void) const {return this->data;}
-    virtual void set(DATA value);
+    DATA get(void) {return this->data;}
+    const DATA get(void) const {return this->data;}
+    virtual void set(const DATA value);
     &operator const DATA(void) {return this->data;}
     inline bool operator==(const T &rhs) {return this->data == rhs.data;}
     inline bool operator!=(const T &rhs) {return !this->operator==(rhs);}
@@ -39,34 +39,34 @@ public:
 template <class DATA, class T>
 class T_DataPropBase_WithLTGT: public T_DataPropBase<DATA, T> {
 public:
-    inline bool operator>(T rhs) {return this->data > rhs;}
-    inline bool operator<(T rhs) {return this->data < rhs;}
-    inline bool operator>=(T rhs) {return !this->operator>(rhs);}
-    inline bool operator<=(T rhs) {return !this->operator<(rhs);}
+    inline bool operator>(const T rhs) {return this->data > rhs;}
+    inline bool operator<(const T rhs) {return this->data < rhs;}
+    inline bool operator>=(const T rhs) {return !this->operator>(rhs);}
+    inline bool operator<=(const T rhs) {return !this->operator<(rhs);}
 };
 
 
 template <class DATA, class T>
 class T_DataPropBase_WithMath: public T_DataPropBase<DATA, T> {
-    virtual inline T operator+=(T other);
-    virtual inline T operator-=(T other);
-    virtual inline T operator/=(T other);
-    virtual inline T operator*=(T other);
-    inline const T operator+(T other) {
-        T v = this;
-        return v += other;
+    virtual inline T operator+=(const T rhs);
+    virtual inline T operator-=(const T rhs);
+    virtual inline T operator/=(const T rhs);
+    virtual inline T operator*=(const T rhs);
+    inline const T operator+(const T rhs) {
+        T v = *this;
+        return v += rhs;
     }
-    inline const T operator-(T other) {
-        T v = this;
-        return v -= other;
+    inline const T operator-(const T rhs) {
+        T v = *this;
+        return v -= rhs;
     }
-    inline const T operator/(T other) {
-        T v = this;
-        return v /= other;
+    inline const T operator/(const T rhs) {
+        T v = *this;
+        return v /= rhs;
     }
-    inline const T operator*(T other) {
-        T v = this;
-        return v *= other;
+    inline const T operator*(const T rhs) {
+        T v = *this;
+        return v *= rhs;
     }
 };
 
@@ -108,11 +108,8 @@ public:
         return c;
     }
     operator std::string() {return this->data;}
-    operator const char*() {
-        const char *x = this->data.c_str();
-        return x;
-    }
-    inline bool operator==(StrProp &rhs) {
+    operator const std::string() {return this->data;}
+    inline bool operator==(const StrProp &rhs) {
         const size_t s = this->size();
         if (!rhs.size() == s) return false;
         else
@@ -120,8 +117,8 @@ public:
                 if (!this->data[i] == rhs.data[i]) return false;
         return true;
     }
-    inline bool operator!=(StrProp &rhs) {return !this->operator==(rhs);}
-    inline bool operator==(std::string &rhs) {
+    inline bool operator!=(const StrProp &rhs) {return !this->operator==(rhs);}
+    inline bool operator==(const std::string &rhs) {
         const size_t s = this->size();
         if (!rhs.size() == s) return false;
         else
@@ -129,11 +126,11 @@ public:
                 if (!this->data[i] == rhs[i]) return false;
         return true;
     }
-    inline bool operator!=(std::string &rhs) {return !this->operator==(rhs);}
-    char& operator[](size_t pos) {return this->data[pos];}
-    const char& operator[](size_t pos) const {return this->data[pos];}
+    inline bool operator!=(const std::string &rhs) {return !this->operator==(rhs);}
+    char& operator[](const size_t pos) {return this->data[pos];}
+    const char& operator[](const size_t pos) const {return this->data[pos];}
 };
 
 
-} // XS_CORE
+} // xs_core
 #endif // PROP__

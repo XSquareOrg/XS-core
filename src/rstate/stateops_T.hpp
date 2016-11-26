@@ -17,7 +17,7 @@
 #ifndef XS_CORE_STATEOPS_T__
 #define XS_CORE_STATEOPS_T__
 
-namespace XS_CORE {
+namespace xs_core {
 
 template <typename NUM, class T>
 class stateops_T {
@@ -39,23 +39,23 @@ public:
     inline operator char(){return this->state;}
 
     // cmp using T
-    inline bool operator==(T &rhs) {return this->state == rhs.state;}
-    inline bool operator!=(T &rhs) {return !this->operator==(rhs);}
-    inline bool operator<(T &rhs) {return this->state < rhs.state;}
-    inline bool operator>(T &rhs) {return this->state > rhs.state;}
-    inline bool operator<=(T &rhs) {return this->state <= rhs.state;}
-    inline bool operator>=(T &rhs) {return this->state >= rhs.state;}
-    inline bool operator^(T &rhs) {return this->state ^ rhs.state;}
+    inline bool operator==(const T &rhs) {return this->state == rhs.state;}
+    inline bool operator!=(const T &rhs) {return !this->operator==(rhs);}
+    inline bool operator<(const T &rhs) {return this->state < rhs.state;}
+    inline bool operator>(const T &rhs) {return this->state > rhs.state;}
+    inline bool operator<=(const T &rhs) {return this->state <= rhs.state;}
+    inline bool operator>=(const T &rhs) {return this->state >= rhs.state;}
+    inline bool operator^(const T &rhs) {return this->state ^ rhs.state;}
 
     // cmp using NUM
-    inline bool operator==(NUM rhs) {return this->state == rhs;}
-    inline bool operator!=(NUM rhs) {return !this->operator==(rhs);}
-    inline bool operator<(NUM rhs) {return this->state < rhs;}
-    inline bool operator>(NUM rhs) {return this->state > rhs;}
-    inline bool operator<=(NUM rhs) {return this->state <= rhs;}
-    inline bool operator>=(NUM rhs) {return this->state >= rhs;}
-    inline bool operator^(NUM rhs) {return this->state ^ rhs;}
+    inline bool operator==(const NUM rhs) {return this->state == rhs;}
+    inline bool operator!=(const NUM rhs) {return !this->operator==(rhs);}
+    inline bool operator<(const NUM rhs) {return this->state < rhs;}
+    inline bool operator>(const NUM rhs) {return this->state > rhs;}
+    inline bool operator<=(const NUM rhs) {return this->state <= rhs;}
+    inline bool operator>=(const NUM rhs) {return this->state >= rhs;}
+    inline bool operator^(const NUM rhs) {return this->state ^ rhs;}
 };
 
-} // XS_CORE
+} // xs_core
 #endif // XS_CORE_STATEOPS_T__

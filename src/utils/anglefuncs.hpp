@@ -19,7 +19,7 @@
 
 #include "pi_const.hpp"
 
-namespace XS_CORE {
+namespace xs_core {
 
 template <typename T>
 inline T deg_to_rads(const T n) {return n*PI_OVER_180;}
@@ -27,5 +27,5 @@ inline T deg_to_rads(const T n) {return n*PI_OVER_180;}
 template <typename T>
 inline T rads_to_deg(const T n) {return n*PI_UNDER_180;}
 
-}; // XS_CORE
+}; // xs_core
 #endif // XS_CORE_ANGLEFUNCS__

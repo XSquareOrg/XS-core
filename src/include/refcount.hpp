@@ -21,7 +21,7 @@
 //#include <mutex>
 //#include <memory>
 
-namespace XS_CORE {
+namespace xs_core {
 
 class RefCount {
 protected:
@@ -67,5 +67,5 @@ public:
     }
 };
 
-} // XS_CORE
+} // xs_core
 #endif // XS_CORE_REFCOUNT__

@@ -22,7 +22,7 @@
 #include "rawid.hpp"
 #include "prop.hpp"
 
-namespace XS_CORE {
+namespace xs_core {
 
 // TODOs (as needed)
 // 1 -- make Mgrs more universaly compatable with other std container types
@@ -33,7 +33,7 @@ class Mgr: public VC<ITEM, T> {
 protected:
 public:
     virtual ~Mgr();
-    void _add_item(ITEM &item) {this->items.push_back(*item);}
+    void _add_item(const ITEM &item) {this->items.push_back(*item);}
 };
 
 
@@ -46,7 +46,7 @@ protected:
     const unsigned &ID(void) const {return &this->rid.ID();}
 public:
     virtual ~MgrWithRID();
-    inline bool operator==(T& rhs) {return this->rid == rhs.rid;}
+    inline bool operator==(const T& rhs) {return this->rid == rhs.rid;}
 };
 
 
@@ -60,7 +60,7 @@ protected:
     }
 public:
     virtual ~ObWithRID_MgrWithRID();
-    inline bool operator==(T& rhs) {return this->rid == rhs.rid;}
+    inline bool operator==(const T& rhs) {return this->rid == rhs.rid;}
 };
 
 
@@ -94,8 +94,8 @@ public:
     T& operator=(T &other) { // move
         if (this != &other) return *this;
     }
-    virtual bool operator==(T &rhs);
-    bool operator!=(T &rhs) {return !this->operator==(rhs);}
+    virtual bool operator==(const T &rhs);
+    bool operator!=(const T &rhs) {return !this->operator==(rhs);}
 };
 
 
@@ -138,5 +138,5 @@ public:
     }
 };
 
-} // XS_CORE
+} // xs_core
 #endif // XS_CORE_MGR__

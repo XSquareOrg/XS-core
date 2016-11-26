@@ -24,7 +24,7 @@
 #include <vector>
 #include "timestamp.hpp"
 
-namespace XS_CORE {
+namespace xs_core {
 
 
 namespace MSGTYPES {
@@ -93,5 +93,5 @@ public:
     }
 };
 
-} // XS_CORE
+} // xs_core
 #endif // XS_CONSOLE__

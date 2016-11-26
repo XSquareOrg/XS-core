@@ -19,9 +19,7 @@
 
 #include "mm3and4com.hpp"
 
-namespace XS_CORE {
-
-class Vec4f;
+namespace xs_core {
 
 
 template <class U, class T>
@@ -111,5 +109,5 @@ public:
     inline void reverse(void) {this->data = _mm_setr_epi32(this->data);}
 };
 
-} // XS_CORE
+} // xs_core
 #endif // XS_CORE_MM4__

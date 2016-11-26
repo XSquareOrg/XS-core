@@ -19,7 +19,7 @@
 
 #include "mm3and4com.hpp"
 
-namespace XS_CORE {
+namespace xs_core {
 
 template <typename U, class T>
 class _mm3 { // common for 3 length mmXXXX classes
@@ -118,5 +118,5 @@ public:
 };
 
 
-} // XS_CORE
+} // xs_core
 #endif // XS_CORE_MM3__

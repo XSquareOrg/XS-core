@@ -23,7 +23,7 @@
 #include <iostream>
 #include <malloc.h>
 
-namespace XS_CORE {
+namespace xs_core {
 
 const char XS_TIME_FMT[20] = "%Y %d %h %D:%M:%S%p";
 
@@ -63,5 +63,5 @@ public:
     //time_t difference(void);
 };
 
-} // XS_CORE
+} // xs_core
 #endif // XS_CORE_TIMESTAMP__

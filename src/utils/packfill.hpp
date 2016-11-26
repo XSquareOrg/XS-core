@@ -19,7 +19,7 @@
 #ifndef XS_CORE_UTILS_PACKFILL__
 #define XS_CORE_UTILS_PACKFILL__
 
-namespace XS_CORE {
+namespace xs_core {
 
 // return pack
 template <typename NUM>

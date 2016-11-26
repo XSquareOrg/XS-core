@@ -17,11 +17,11 @@
 #ifndef XS_CORE_PI_CONST__
 #define XS_CORE_PI_CONST__
 
-namespace XS_CORE {
+namespace xs_core {
 
 #define PI            3.141592653f;
 #define PI_OVER_180   0.017453292f;     // PI/180
 #define PI_UNDER_180  57.29577952f;    // 180/PI
 
-} // XS_CORE
+} // xs_core
 #endif // XS_CORE_PI_CONST__

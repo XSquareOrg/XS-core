@@ -17,27 +17,26 @@
 #ifndef XS_CORE_MM_BASEMATHS__
 #define XS_CORE_MM_BASEMATHS__
 
-namespace XS_CORE {
+namespace xs_core {
 
 template <class NUM, class T>
 class mm_basemaths_T {
 public:
-    T filled(NUM n) {
+    inline T filled(const NUM n) {
         T t;
         t.fill(n);
         return *t;
     }
-    T reversed(void) {
+    inline T reversed(void) {
         T t;
         t.reverse();
         return *t;
     }
-    T inverted(void) {
+    inline T inverted(void) {
         T t;
         t.invert();
         return *t;
     }
-    inline T operator!=(const T &rhs) {return !this->operator==(rhs);}
     inline T operator+(const T &rhs) {
         T x = this->operator+=(rhs);
         return x;
@@ -61,5 +60,5 @@ public:
 };
 
 
-} // XS_CORE
+} // xs_core
 #endif // XS_CORE_MM_BASEMATHS__

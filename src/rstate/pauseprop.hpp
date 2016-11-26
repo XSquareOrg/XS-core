@@ -17,7 +17,7 @@
 #ifndef XS_CORE_PAUSEPROP__
 #define XS_CORE_PAUSEPROP__
 
-namespace XS_CORE {
+namespace xs_core {
 
 class PauseProp {
 protected:
@@ -25,10 +25,10 @@ protected:
 public:
     inline const bool get(void) const {return this->_paused;}
     inline bool get(void) {return this->_paused;}
-    inline void set(int state) {
+    inline void set(const int state) {
         if (!this->_paused == !state) this->_paused = state;
     }
-    inline void set(bool state) {
+    inline void set(const bool state) {
         if (this->_paused != state) this->_paused = state;
     }
     inline void pause(void) {
@@ -50,12 +50,12 @@ public:
     inline operator unsigned() {return this->_paused;}
     inline operator const char() {return this->_paused;}
     inline operator char() {return this->_paused;}
-    inline bool operator==(bool rhs) {return this->_paused == rhs;}
-    inline bool operator!=(bool rhs) {return this->_paused != rhs;}
-    inline bool operator==(PauseProp &rhs) {
+    inline bool operator==(const bool rhs) {return this->_paused == rhs;}
+    inline bool operator!=(const bool rhs) {return this->_paused != rhs;}
+    inline bool operator==(const PauseProp &rhs) {
         return this->_paused == rhs._paused;
     }
-    inline bool operator!=(PauseProp &rhs) {
+    inline bool operator!=(const PauseProp &rhs) {
         return !this->operator==(rhs);
     }
     inline bool operator~(void) {
@@ -64,5 +64,5 @@ public:
     }
 };
 
-} // XS_CORE
+} // xs_core
 #endif // XS_CORE_PAUSEPROP_

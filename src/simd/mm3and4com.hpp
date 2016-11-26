@@ -25,7 +25,7 @@
 
 
 
-namespace XS_CORE {
+namespace xs_core {
 
 template <class T>
 class mm128: mm_basemaths_T<float, T> {
@@ -133,5 +133,5 @@ public:
 };
 
 
-} // XS_CORE
+} // xs_core
 #endif // XS_CORE_MM3AND4COM__

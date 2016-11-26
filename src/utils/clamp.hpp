@@ -18,7 +18,7 @@
 #ifndef CLAMPMATH__
 #define CLAMPMATH__
 
-namespace XS_CORE {
+namespace xs_core {
 
 template <typename NUM>
 NUM clamped(const NUM v, const NUM min, const NUM max) {
@@ -47,5 +47,5 @@ bool in_range(const NUM v, const NUM min, const NUM max) {
 }
 
 
-} // XS_CORE
+} // xs_core
 #endif // CLAMPMATH__
