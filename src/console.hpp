@@ -18,7 +18,6 @@
 #ifndef XS_CONSOLE__
 #define XS_CONSOLE__
 
-
 #include <string>
 #include <iostream>
 #include <vector>
@@ -37,8 +36,8 @@ namespace MSGTYPES {
 
 class Message {
 protected:
-    char msgtype;
-    std::string msg;
+    char msgtype = 0;
+    std::string msg = 0;
     TimeStamp ts;
 public:
     Message(const char msgtype, const std::string message) {
@@ -63,35 +62,32 @@ public:
 class Console {
 protected:
     std::vector<Message> items;
-    void append(const Message &msg);
 public:
     const unsigned size(void) const {return this->items.size();}
     const TimeStamp &last_timestamp(void) {return this->items.back().timestamp();}
     const Message &last(void) {return this->items.back();}
     void log(const char msgtype, const std::string msg) {
-        if (msg.size() > 0) this->append((*new Message(msgtype, msg)));
+        if (msg.size() > 0) this->items.push_back((*new Message(msgtype, msg)));
         else if (msgtype == MSGTYPES::SEPARATOR) this->add_seperator();
     }
     void log_and_print(const char msgtype, const std::string msg) {
         if (msg.size() > 0) {
-            this->append((*new Message(msgtype, msg)));
+            this->items.push_back((*new Message(msgtype, msg)));
             std::cout << msg;
         } else if (msgtype == MSGTYPES::SEPARATOR) this->add_seperator();
     }
     void add_seperator(void) {
-        this->append((*new Message(MSGTYPES::SEPARATOR, "")));
+        this->items.push_back((*new Message(MSGTYPES::SEPARATOR, "")));
     }
-    Message &operator[] (unsigned i) {
-        if (i < 0) i = this->size() - i;
-        if (i < 0 || i > this->size()) std::cout << "index is out of bounds.";
-        else return this->items[i];
+    void clear(void) {this->items.clear();}
+    Message &operator[] (size_t i) {
+        return this->items.operator[](i);
     }
-    const Message &operator[] (unsigned i) const {
-        if (i < 0) i = this->size() - i;
-        if (i < 0 || i > this->size()) std::cout << "index is out of bounds.";
-        else return this->items[i];
+    const Message &operator[] (size_t i) const {
+        return this->items.operator[](i);
     }
 };
+
 
 } // xs_core
 #endif // XS_CONSOLE__

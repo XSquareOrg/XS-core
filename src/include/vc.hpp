@@ -33,10 +33,10 @@ protected:
         if (i == 0 || i <= this->size())
             this->items.erase(this->items.begin()+i);
     }
-    void _add_item(ITEM &item) {this->items.push_back;}
+    void _add_item(ITEM &item) {this->items.push_back(item);}
 public:
     inline unsigned size(void) const {return this->items.size();}
-    inline bool is_empty(void) {return this->items.is_empty();}
+    inline bool is_empty(void) {return this->items.empty();}
     size_t indexof(const ITEM item) {
         // returns -1 if item does not exist
         const unsigned s = this->items.size();
@@ -52,9 +52,14 @@ public:
     }
     bool operator==(const T &rhs) {return this->items->operator==(rhs);}
     bool operator!=(const T &rhs) {return !this->operator==(rhs);}
-    ITEM& operator[](const size_t i) {return this->items[i];}
-    const ITEM& operator[](const size_t i) const {return this->items[i];}
+    ITEM& operator[](const size_t i) {
+        return this->items.operator[](i);
+    }
+    const ITEM& operator[](const size_t i) const {
+        return this->items.operator[]();
+    }
 };
+
 
 } // xs_core
 #endif // XS_CORE_VC__

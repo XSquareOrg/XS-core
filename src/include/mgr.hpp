@@ -138,5 +138,6 @@ public:
     }
 };
 
+
 } // xs_core
 #endif // XS_CORE_MGR__
