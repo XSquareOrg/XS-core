@@ -23,26 +23,50 @@
 namespace xs_core {
 
 
-template <class U, class T>
-class _mm2: public mm_basemaths_T<U, T> {
-    struct {U x, y;} data;
+typedef struct {
+    union {
+        __m128 v;
+        double a[2]; // for access by index
+    } data;
+    double hadd(void) { // horizontal add
+        double t = (this->data.a[0] + this->data.a[1]);
+        return t;
+        }
+} float2u;
+
+
+typedef struct {
+    union {
+        __m64 v;
+        int a[2]; // for access by index
+    } data;
+    int hadd(void) { // horizontal add
+        int t = (this->data.a[0] + this->data.a[1]);
+        return t;
+        }
+} int2u;
+
+
+template <class NUM, class T>
+class _mm2: public mm_basemaths_T<NUM, T> {
 public:
-    inline const unsigned size(void) {return 2;}
+    inline const unsigned size(void) {return this.u.size();}
+    bool is_flat(void) {return this->u.data.a[0] == this->u.data.a[1];}
     inline void zero_axises(const bool* v[2]) {
-        if (!v[0]) this->data.x = 0;
-        if (!v[1]) this->data.y = 0;
+        if (!v[0]) this->u.data.a[0] = 0;
+        if (!v[1]) this->u.data.a[1] = 0;
     }
     inline void zero_axises(T v) {
-        if (v[0] <= 0) this->data.x = 0;
-        if (v[1] <= 0) this->data.y = 0;
+        if (v[0] <= 0) this->u.data.a[0] = 0;
+        if (v[1] <= 0) this->u.data.a[1] = 0;
     }
     inline void zero_axises(const int v[2]) {
-        if (!v[0]) this->data.x = 0;
-        if (!v[1]) this->data.y = 0;
+        if (!v[0]) this->u.data.a[0] = 0;
+        if (!v[1]) this->u.data.a[1] = 0;
     }
     inline void zero(void) {
-        this->data.x = 0;
-        this->data.y = 0;
+        this->u.data.a[0] = 0;
+        this->u.data.a[1] = 0;
     }
     inline T swizzled(int x, int y) {
         T t;
@@ -63,10 +87,14 @@ public:
 
 
 template <class T>
-class mm_2: public _mm2<float, T> { // 32bit float
+class mm_2: public _mm2<double, T> { // double
+    // no see funcs for 2 floats so use __m128 with 2 doubles instead
+protected:
+    float2u u;
 public:
     operator __m64();
     operator const __m64();
+    inline void fill(const double n);
     inline void fill(const float n);
     inline void swizzle(int d[2]);
     inline void swizzle(int x, int y);
@@ -86,68 +114,72 @@ public:
 
 template <class T>
 class mmi_2: public _mm2<int, T> { // 32bit integer
+protected:
+    int2u u;
 public:
-    operator __m64();
-    operator const __m64();
-    void fill(const float n) {
-        __m64 m = _mm_set1_pi32(n);
-        this->data = m;
+    operator __m64() {return this->u.data.v;}
+    operator const __m64() const {return this->u.data.v;}
+    void fill(const int n) {
+        this->u.data.v = _mm_set1_pi32(n);
+        _mm_empty();
     }
     void zero(void) {
-        __m64 m = _mm_setzero_si64();
-        this->data = m;
+        this->u.data.v = _mm_setzero_si64();
+        _mm_empty();
     }
     void swizzle(int d[2]) {
-        this->data.x = (d[0] <= 0) ? this->data.x : this->data.y;
-        this->data.y = (d[1] <= 0) ? this->data.x : this->data.y;
+        this->u.data.a[0] = (d[0] <= 0) ? this->u.data.a[0] : this->u.data.a[1];
+        this->u.data.a[1] = (d[1] <= 0) ? this->u.data.a[0] : this->u.data.a[1];
     }
     void swizzle(int x, int y) {
-        this->data.x = (x <= 0) ? this->data.x : this->data.y;
-        this->data.y = (y <= 0) ? this->data.x : this->data.y;
+        this->u.data.a[0] = (x <= 0) ? this->u.data.a[0] : this->u.data.a[1];
+        this->u.data.a[1] = (y <= 0) ? this->u.data.a[0] : this->u.data.a[1];
     }
-    inline void reverse(void) {
-        __m64 m = _mm_setr_pi32(this->data);
-        this->data = m;
-    }
+    inline void reverse(void) {this->u.data.v = _mm_setr_pi32(this->u.data.v);}
     inline T operator+=(const T &rhs) {
-        __m64 m = _mm_add_pi32(this->data, rhs.data);
-        this->data = m;
+        this->u.data.v = _mm_add_pi32(this->u.data.v, rhs.u.data.v);
+        _mm_empty();
         return *this;
     }
     inline T operator-=(const T &rhs) {
-        __m64 m = _mm_sub_pi32(this->data, rhs.data);
-        this->data = m;
+        this->u.data.v = _mm_sub_pi32(this->u.data.v, rhs.u.data.v);
+        _mm_empty();
         return *this;
     }
     inline T operator*=(const T &rhs) {
-        this->data.x *= rhs.data.x;
-        this->data.y *= rhs.data.y;
+        this->u.data.a[0] *= rhs.u.data.a[0];
+        this->u.data.a[1] *= rhs.u.data.a[1];
         return *this;
     }
     inline T operator/=(const T &rhs) {
-        this->data.x /= rhs.data.x;
-        this->data.y /= rhs.data.y;
+        this->u.data.a[0] /= rhs.u.data.a[0];
+        this->u.data.a[1] /= rhs.u.data.a[1];
         return *this;
     }
     inline T operator^=(const T &rhs) {
-        __m64 m = _mm_xor_si64(this->data, rhs);
-        this->data = m;
+        __m64 m = _mm_xor_si64(this->u.data.v, rhs.u.data.v);
+        this->u.data.v = m;
+        _mm_empty();
     }
     inline bool operator==(const T &rhs) {
-        return this.data.x == rhs.data.x && this.data.y == rhs.data.y;
+        return this.data.a[0] == rhs.u.data.a[0] &&
+            this.u.data.a[1] == rhs.u.data.a[1];
     }
     //inline bool operator!=(const T &rhs);
     inline void XX(void) {
-        __m64 m = _mm_set_pi32(this->data.x);
-        this->data = m;
+        __m64 m = _mm_set_pi32(this->u.data.a[0]);
+        this->u.data.v = m;
+        _mm_empty();
     }
     inline void YY(void) {
-        __m64 m = _mm_set_pi32(this->data.y);
-        this->data = m;
+        __m64 m = _mm_set_pi32(this->u.data.a[1]);
+        this->u.data.v = m;
+        _mm_empty();
     }
     inline void YX(void) {
-        __m64 m = _mm_setr_pi32(this->data);
-        this->data = m;
+        __m64 m = _mm_setr_pi32(this->u.data.v);
+        this->u.data.v = m;
+        _mm_empty();
     }
 };
 

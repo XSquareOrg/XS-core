@@ -17,11 +17,14 @@
 #ifndef XS_CORE_MM_BASEMATHS__
 #define XS_CORE_MM_BASEMATHS__
 
+#include <cassert>
+
 namespace xs_core {
 
 template <class NUM, class T>
 class mm_basemaths_T {
 public:
+    virtual const unsigned size(void);
     inline T filled(const NUM n) {
         T t;
         t.fill(n);
@@ -56,6 +59,14 @@ public:
     inline T operator^(const T &rhs) {
         T x = this->operator^=(rhs);
         return x;
+    }
+    NUM operator[](const unsigned i) {
+        assert(i <= this->size());
+        return this->u.data.a[i];
+    }
+    const NUM operator[](const unsigned i) const {
+        assert(i <= this->size());
+        return this->u.data.a[i];
     }
 };
 

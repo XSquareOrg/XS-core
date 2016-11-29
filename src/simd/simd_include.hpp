@@ -28,4 +28,7 @@
     #include <emmintrin.h> // sse2
 #endif
 
+#include <cmath>
+#include "../buildkern/simdchk.h"
+
 #endif // XS_CORE_SIMDINCLUDE__

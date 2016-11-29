@@ -28,108 +28,109 @@
 namespace xs_core {
 
 template <class T>
-class mm128: mm_basemaths_T<float, T> {
-protected:
-    __m128 data;
+class mm128: mm_basemaths_T<float, T> { // float
 public:
     // raw conversion ops
     inline operator const __m128i() {
-        const __m128i m = _mm_cvtepi_32_ps(this->data);
+        const __m128i m = _mm_cvtepi_32_ps(this->u.data.v);
         return m;
     }
     inline operator __m128i() {
-        __m128i m = _mm_cvtepi32_ps(this->data);
+        __m128i m = _mm_cvtepi32_ps(this->u.data.v);
         return m;
     }
-    inline operator const __m128() const {return *this->data;}
-    inline operator __m128() {return *this->data;}
-    inline void zero(void) {this->data = _mm_setzero_ps();}
+    inline operator const __m128() const {return *this->u.data.v;}
+    inline operator __m128() {return *this->u.data.v;}
+    inline void zero(void) {this->u.data.v = _mm_setzero_ps();}
     inline bool is_zero(void) {
         __m128 m = _mm_setzero_ps();
-        return _mm_cmpeq_ps(this->data, m);
+        return _mm_cmpeq_ps(this->u.data.v, m);
     }
     inline T max(const T &other) {
-        T t = _mm_max_ps(this->data, other.data);
+        T t = _mm_max_ps(this->u.data.v, other.u.data.v);
         return t;
     }
     inline void to_max(const T &other) {
-        this->data = _mm_max_ps(this->data, other.data);
+        this->u.data.v = _mm_max_ps(this->u.data.v, other.u.data.v);
     }
     inline T min(const T &other) {
-        T t = _mm_min_ps(this->data, other.data);
+        T t = _mm_min_ps(this->u.data.v, other.u.data.v);
         return t;
     }
     inline void to_min(const T &other) {
-        this->data = _mm_min_ps(this->data, other.data);
+        this->u.data.v = _mm_min_ps(this->u.data.v, other.u.data.v);
     }
-    inline bool operator==(T rhs) {return _mm_cmpeq_ps(this->data, rhs);}
-    inline bool operator!=(T rhs) {return _mm_cmpneq_ps(this->data, rhs);}
+    inline bool operator==(T rhs) {
+        return _mm_cmpeq_ps(this->u.data.v, rhs.u.data.v);
+    }
+    inline bool operator!=(T rhs) {
+        return _mm_cmpneq_ps(this->u.data.v, rhs.u.data.v);
+    }
     inline T operator+=(T rhs) {
-        this->data = _mm_add_ps(this->data, rhs);
+        this->u.data.v = _mm_add_ps(this->u.data.v, rhs.u.data.v);
         return *this;
     }
     inline T operator-=(T rhs) {
-        this->data = _mm_sub_ps(this->data, rhs);
+        this->u.data.v = _mm_sub_ps(this->u.data.v, rhs.u.data.v);
         return *this;
     }
     inline T operator*=(T rhs) {
-        this->data = _mm_mul_ps(this->data, rhs);
+        this->u.data.v = _mm_mul_ps(this->u.data.v, rhs.u.data.v);
         return *this;
     }
     inline T operator/=(T rhs) {
-        this->data = _mm_div_ps(this->data, rhs);
+        this->u.data.v = _mm_div_ps(this->u.data.v, rhs.u.data.v);
         return *this;
     }
     inline T operator^=(T rhs) {
-        this->data = _mm_xor_ps(this->data, rhs);
+        this->u.data.v = _mm_xor_ps(this->u.data.v, rhs.u.data.v);
         return *this;
     }
 };
 
 
 template <class T>
-class mm128i: mm_basemaths_T<int, T> {
+class mm128i: mm_basemaths_T<int, T> { // int
 protected:
-    __m128i data;
 public:
     // raw _m128x conversion ops
-    inline operator const __m128i() const {return *this->data;}
-    inline operator __m128i() {return *this->data;}
+    inline operator const __m128i() const {return *this->u.data.v;}
+    inline operator __m128i() {return *this->u.data.v;}
     inline operator const __m128() const {
-        const __m128 m = _mm_cvtps_epi32(this->data);
+        const __m128 m = _mm_cvtps_epi32(this->u.data.v);
         return m;
     }
     inline operator __m128() {
-        __m128 m = _mm_cvtps_epi32(this->data);
+        __m128 m = _mm_cvtps_epi32(this->u.data.v);
         return m;
     }
-    inline void zero(void) {this->data = _mm_setzero_si128();}
+    inline void zero(void) {this->u.data.v = _mm_setzero_si128();}
     inline bool is_zero(void) {
         __m128 m = _mm_setzero_si128();
-        return _mm_cmpeq_ps(this->data, m);
+        return _mm_cmpeq_ps(this->u.data.v, m);
     }
     inline T operator+=(const T &rhs) {
-        this->data = _mm_add_epi32(this->data, rhs);
+        this->u.data.v = _mm_add_epi32(this->u.data.v, rhs.u.data.v);
         return *this;
     }
     inline T operator-=(const T &rhs) {
-        this->data = _mm_sub_epi32(this->data, rhs);
+        this->u.data.v = _mm_sub_epi32(this->u.data.v, rhs.u.data.v);
         return *this;
     }
     inline T operator*=(const T &rhs) {
-        this->data = _mm_mul_epi32(this->data, rhs);
+        this->u.data.v = _mm_mul_epi32(this->u.data.v, rhs.u.data.v);
         return *this;
     }
     inline T operator/=(const T &rhs) {
-        this->data = _mm_div_epi32(this->data, rhs);
+        this->u.data.v = _mm_div_epi32(this->u.data.v, rhs.u.data.v);
         return *this;
     }
     inline T operator^=(const T &rhs) {
-        this->data = _mm_xor_si128(this->data, rhs);
+        this->u.data.v = _mm_xor_si128(this->u.data.v, rhs.u.data.v);
         return *this;
     }
-    inline T operator>>(int i) {return _mm_srai_epi32(this->data);}
-    inline T operator<<(int i) {return _mm_srli_epi32(this->data);}
+    inline T operator>>(int i) {return _mm_srai_epi32(this->u.data.v);}
+    inline T operator<<(int i) {return _mm_srli_epi32(this->u.data.v);}
 };
 
 
