@@ -19,7 +19,6 @@
 #ifndef XS_CORE_MM3AND4COM__
 #define XS_CORE_MM3AND4COM__
 
-#include "mm_basemaths.hpp"
 #include "simd_include.hpp"
 //#include "veclikebase_T.hpp"
 
@@ -28,7 +27,7 @@ namespace xs_core {
 
 
 template <class T>
-class mm128: mm_basemaths_T<float, T> { // float
+class mm128 { // float
 public:
     // raw conversion ops
     inline operator const __m128i() {
@@ -90,7 +89,7 @@ public:
 
 
 template <class T>
-class mm128i: mm_basemaths_T<int, T> { // int
+class mm128i { // int
 protected:
 public:
     // raw _m128x conversion ops

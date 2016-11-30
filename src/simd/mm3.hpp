@@ -17,6 +17,7 @@
 #ifndef XS_CORE_MM3__
 #define XS_CORE_MM3__
 
+#include "mm_basemaths.hpp"
 #include "mm3and4com.hpp"
 
 namespace xs_core {
@@ -51,7 +52,7 @@ typedef struct {
 
 
 template <typename NUM, class T>
-class _mm3 { // common for 3 length mmXXXX classes
+class _mm3: public mm_basemaths_T<NUM, T> { // common for 3 length mmXXXX classes
 public:
     inline const unsigned size(void) {return 3;}
     bool is_flat(bool) {

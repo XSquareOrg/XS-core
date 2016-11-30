@@ -29,13 +29,13 @@ int _hadd2i(__m64 v);
 
 typedef struct {
     union {
-        __m128 v;
+        __m128d v;
         double a[2]; // for access by index
     } data;
     double hadd(void) { // horizontal add
         double t = (this->data.a[0] + this->data.a[1]);
         return t;
-        }
+    }
 } double2u;
 
 
@@ -47,14 +47,14 @@ typedef struct {
     int hadd(void) { // horizontal add
         int t = (this->data.a[0] + this->data.a[1]);
         return t;
-        }
+    }
 } int2u;
 
 
 template <class NUM, class T>
 class _mm2: public mm_basemaths_T<NUM, T> {
 public:
-    inline const unsigned size(void) {return this.u.size();}
+    inline const unsigned size(void) {return 2;}
     bool is_flat(void) {return this->u.data.a[0] == this->u.data.a[1];}
     inline void zero_axises(const bool* v[2]) {
         if (!v[0]) this->u.data.a[0] = 0;
@@ -67,10 +67,6 @@ public:
     inline void zero_axises(const int v[2]) {
         if (!v[0]) this->u.data.a[0] = 0;
         if (!v[1]) this->u.data.a[1] = 0;
-    }
-    inline void zero(void) {
-        this->u.data.a[0] = 0;
-        this->u.data.a[1] = 0;
     }
     inline T swizzled(int x, int y) {
         T t;
@@ -92,24 +88,43 @@ public:
 
 template <class T>
 class mm2d: public _mm2<double, T> { // double
-    // no see funcs for 2 floats so use __m128 with 2 doubles instead
+    // no sse funcs for 2 floats so use __m128 with 2 doubles instead
 protected:
     double2u u;
 public:
-    operator __m64();
-    operator const __m64();
-    inline void fill(const double n);
-    inline void fill(const float n);
+    operator __m128d() {return this->u.data.v;}
+    operator const __m128d() {return this->u.data.v;}
+    inline void fill(const double n) {this->u.data.v = _mm_set1_pd(n);}
+    inline void fill(const float n) {this->u.data.v = _mm_set1_pd(n);}
+    void set(const double x, const double y) {this->u.data.v = _mm_set_pd(x, y);}
+    void set(const float x, const float y) {this->u.data.v = _mm_set_pd(x, y);}
+    void set(double n[2]) {this->u.data.v = _mm_set_pd(n[0], n[1]);}
+    void set(float n[2]) {this->u.data.v = _mm_set_pd(n[0], n[1]);}
+    inline void zero(void) {this->u.data.v = _mm_setzero_pd();}
     inline void swizzle(int d[2]);
     inline void swizzle(int x, int y);
-    inline void reverse(void);
-    inline T operator+=(const T &rhs);
-    inline T operator-=(const T &rhs);
-    inline T operator*=(const T &rhs);
-    inline T operator/=(const T &rhs);
-    inline T operator^=(const T &rhs);
-    inline bool operator==(const T &rhs);
-    //inline bool operator!=(const T &rhs);
+    inline void reverse(void) {this->u.data.v = _mm_setr_pd(this->u.data.v);}
+    inline T operator+=(const T &rhs) {
+        this->u.data.v = _mm_add_pd(this->u.data.v, rhs.u.data.v);
+    }
+    inline T operator-=(const T &rhs) {
+        this->u.data.v = _mm_sub_pd(this->u.data.v, rhs.u.data.v);
+    }
+    inline T operator*=(const T &rhs) {
+        this->u.data.v = _mm_mul_pd(this->u.data.v, rhs.u.data.v);
+    }
+    inline T operator/=(const T &rhs) {
+        this->u.data.v = _mm_div_pd(this->u.data.v, rhs.u.data.v);
+    }
+    inline T operator^=(const T &rhs) {
+        this->u.data.v = _mm_xor_pd(this->u.data.v, rhs.u.data.v);
+    }
+    inline bool operator==(const T &rhs) {
+        return this->u.data.v = _mm_cmpeq_pd(this->u.data.v, rhs.u.data.v);
+    }
+    inline bool operator!=(const T &rhs) {
+        return this->u.data.v = _mm_cmpneq_pd(this->u.data.v, rhs.u.data.v);
+    }
     inline void XX(void);
     inline void YY(void);
     inline void YX(void);
@@ -123,6 +138,10 @@ protected:
 public:
     operator __m64() {return this->u.data.v;}
     operator const __m64() const {return this->u.data.v;}
+    void set(const int x, const int y) {
+        this->u.data.v = _mm_set_pi32(x, y);
+        _mm_empty();
+    }
     void fill(const int n) {
         this->u.data.v = _mm_set1_pi32(n);
         _mm_empty();
@@ -139,7 +158,10 @@ public:
         this->u.data.a[0] = (x <= 0) ? this->u.data.a[0] : this->u.data.a[1];
         this->u.data.a[1] = (y <= 0) ? this->u.data.a[0] : this->u.data.a[1];
     }
-    inline void reverse(void) {this->u.data.v = _mm_setr_pi32(this->u.data.v);}
+    inline void reverse(void) {
+        this->u.data.v = _mm_setr_pi32(this->u.data.v);
+        _mm_empty();
+    }
     inline T operator+=(const T &rhs) {
         this->u.data.v = _mm_add_pi32(this->u.data.v, rhs.u.data.v);
         _mm_empty();

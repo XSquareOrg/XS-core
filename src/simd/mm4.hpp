@@ -17,6 +17,7 @@
 #ifndef XS_CORE_MM4__
 #define XS_CORE_MM4__
 
+#include "mm_basemaths.hpp"
 #include "mm3and4com.hpp"
 
 namespace xs_core {
@@ -35,7 +36,7 @@ typedef struct {
         float t = (this->data.a[0] + this->data.a[1]) +
             (this->data.a[2] + this->data.a[3]);
         return t;
-        }
+    }
 } float4u;
 
 
@@ -48,17 +49,14 @@ typedef struct {
         int t = (this->data.a[0] + this->data.a[1]) +
             (this->data.a[2] + this->data.a[3]);
         return t;
-        }
+    }
 } int4u;
 
 
 template <class NUM, class T>
-class _mm4 { // common for 4 length mmXXXX classes
+class _mm4: public mm_basemaths_T<NUM, T> { // common for 4 length mmXXXX classes
 public:
     inline const unsigned size(void) {return 4;}
-    inline T axial_sum(void) {
-        return (this->u.data.v.x + this->u.data.v.y) + (this->u.data.v.z + this->u.data.v.w);
-    }
     inline T swizzled(int d[4]) {
         T t;
         t.swizzle(d);
@@ -91,17 +89,17 @@ public:
 
 
 template <class T>
-class mm4f: public _mm4<float, T>,  public mm128<T> { // float
+class mm4f: public _mm4<float, T>,  public mm128<T>{ // float
 protected:
     float4u u;
 public:
-    inline void set(float x, float y, float z, float w) {
+    inline void set(const float x, const float y, const float z, const float w) {
         this->u.data.v = _mm_set_ps(w, z, y, x);
     }
     inline void set(float data[4]) {
         this->u.data.v = _mm_set_ps(data[3], data[2], data[1], data[0]);
     }
-    inline void fill(float n) {this->u.data.v = _mm_set_ps1(n);}
+    inline void fill(const float n) {this->u.data.v = _mm_set_ps1(n);}
     inline bool is_flat(void) {
         __m128 m = _mm_set_ps1(this->u.data.v[0]);
         return _mm_cmpeq_ps(this->u.data.v, m);
@@ -119,17 +117,19 @@ public:
 
 
 template <class T>
-class mm4i: public _mm4<int, T>,  public mm128i<T> { // int
+class mm4i: public _mm4<int, T>,  public mm128i<T> {
+    //public mm_basemaths_T<int, T> { // int
 protected:
     int4u u;
 public:
-    inline void set(int x, int y, int z, int w) {
+    inline void set(const int x, const int y, const int z, const int w) {
         this->u.data.v = _mm_set_epi32(w, z, y, x);
     }
     inline void set(int data[4]) {
         this->u.data.v = _mm_set_epi32(data[3], data[2], data[1], data[0]);
     }
-    inline void fill(int n) {this->u.data.v = _mm_set1_epi32(n);}
+    inline void fill(const int n) {this->u.data.v = _mm_set1_epi32(n);}
+    inline bool is_flat(void);
     inline void swizzle(int x, int y, int z, int w) {
         __m128i m = _mm_set_epi32(this->u.data.v);
         this->u.data.v = _mm_shuffle_epi32(m, _MM_SHUFFLE(z, y, x, w));
