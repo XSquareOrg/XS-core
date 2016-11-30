@@ -21,6 +21,11 @@
 
 namespace xs_core {
 
+// horizontal add funcs
+float _hadd4f(__m128 v);
+int _hadd4i(__m128i v);
+
+
 typedef struct {
     union {
         __m128 v;
@@ -86,7 +91,7 @@ public:
 
 
 template <class T>
-class mm128_4: public _mm4<float, T>,  public mm128<T> { // float
+class mm4f: public _mm4<float, T>,  public mm128<T> { // float
 protected:
     float4u u;
 public:
@@ -114,7 +119,7 @@ public:
 
 
 template <class T>
-class mm128i_4: public _mm4<int, T>,  public mm128i<T> { // int
+class mm4i: public _mm4<int, T>,  public mm128i<T> { // int
 protected:
     int4u u;
 public:

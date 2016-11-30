@@ -24,8 +24,8 @@
 //#include "veclikebase_T.hpp"
 
 
-
 namespace xs_core {
+
 
 template <class T>
 class mm128: mm_basemaths_T<float, T> { // float

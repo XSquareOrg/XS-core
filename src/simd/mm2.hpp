@@ -22,6 +22,10 @@
 
 namespace xs_core {
 
+// horizontal add funcs
+double _hadd2d(__m128 v);
+int _hadd2i(__m64 v);
+
 
 typedef struct {
     union {
@@ -32,7 +36,7 @@ typedef struct {
         double t = (this->data.a[0] + this->data.a[1]);
         return t;
         }
-} float2u;
+} double2u;
 
 
 typedef struct {
@@ -87,10 +91,10 @@ public:
 
 
 template <class T>
-class mm_2: public _mm2<double, T> { // double
+class mm2d: public _mm2<double, T> { // double
     // no see funcs for 2 floats so use __m128 with 2 doubles instead
 protected:
-    float2u u;
+    double2u u;
 public:
     operator __m64();
     operator const __m64();
@@ -113,7 +117,7 @@ public:
 
 
 template <class T>
-class mmi_2: public _mm2<int, T> { // 32bit integer
+class mm2i: public _mm2<int, T> { // 32bit integer
 protected:
     int2u u;
 public:
