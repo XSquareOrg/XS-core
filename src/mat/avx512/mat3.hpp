@@ -22,20 +22,50 @@
 namespace xs_core {
 
 
+template <typename NUM, class T>
 class Mat3Base {
 public:
     const unsigned width(void) {return 3;}
     const unsigned height(void) {return 3;}
     bool is_square(void) {return true;}
+    inline T operator+(const T& rhs) {
+        T t;
+        t.u.data.v += rhs.u.data.v;
+        return t;
+    }
+    inline T operator-(const T& rhs) {
+        T t;
+        t.u.data.v -= rhs.u.data.v;
+        return t;
+    }
+    inline T operator*(const NUM rhs) { // scalar product
+        T t;
+        t.u.data.v *= rhs.u.data.v;
+        return t;
+    }
+    inline T operator*(const T& rhs) { // matrix product
+        T t;
+        t.u.data.v *= rhs.u.data.v;
+        return t;
+    }
 };
 
-class Mat3i: public Mat3Base { // 3x3 int
+
+class Mat3i: public Mat3Base<int, Mat3i> { // 3x3 int
 public:
+    inline Mat3i operator+=(const Mat3i& rhs);
+    inline Mat3i operator-=(const Mat3i& rhs);
+    inline Mat3i operator*=(const int rhs);
+    inline Mat3i operator*=(const Mat3i& rhs);
 };
 
 
-class Mat3f: public Mat3Base { // 3x3 float
+class Mat3f: public Mat3Base<float, Mat3f> { // 3x3 float
 public:
+    inline Mat3f operator+=(const Mat3f& rhs);
+    inline Mat3f operator-=(const Mat3f& rhs);
+    inline Mat3f operator*=(const float rhs);
+    inline Mat3f operator*=(const Mat3f& rhs);
 };
 
 

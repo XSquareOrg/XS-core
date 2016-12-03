@@ -23,6 +23,7 @@
 
 namespace xs_core {
 
+
 template <class MM, typename NUM>
 class mat4u {
 public:
@@ -34,22 +35,52 @@ public:
     const unsigned height = 4;
 };
 
-template <class U>
+
+template <class U, typename NUM, class T>
 class Mat4Base {
     U u;
 public:
     const unsigned width(void) {return 4;}
     const unsigned height(void) {return 4;}
     bool is_square(void) {return true;}
+    inline T operator+(const T& rhs) {
+        T t;
+        t.u.data.v += rhs.u.data.v;
+        return t;
+    }
+    inline T operator-(const T& rhs) {
+        T t;
+        t.u.data.v -= rhs.u.data.v;
+        return t;
+    }
+    inline T operator*(const NUM rhs) { // scalar product
+        T t;
+        t.u.data.v *= rhs.u.data.v;
+        return t;
+    }
+    inline T operator*(const T& rhs) { // matrix product
+        T t;
+        t.u.data.v *= rhs.u.data.v;
+        return t;
+    }
 };
 
 
-class Mat4i: public Mat4Base<mat4u<__m128i, int>> { // 4x4 int
+class Mat4i: public Mat4Base<mat4u<__m128i, int>, int, Mat4i> { // 4x4 int
 public:
+    inline Mat4i operator+=(const Mat4i& rhs);
+    inline Mat4i operator-=(const Mat4i& rhs);
+    inline Mat4i operator*=(const int rhs);
+    inline Mat4i operator*=(const Mat4i& rhs);
 };
 
-class Mat4f: public Mat4Base<mat4u<__m128, float>> { // 4x4 float
+
+class Mat4f: public Mat4Base<mat4u<__m128, float>, float, Mat4f> { // 4x4 float
 public:
+    inline Mat4i operator+=(const Mat4i& rhs);
+    inline Mat4i operator-=(const Mat4i& rhs);
+    inline Mat4i operator*=(const int rhs);
+    inline Mat4i operator*=(const Mat4i& rhs);
 };
 
 

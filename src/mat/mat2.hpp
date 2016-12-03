@@ -22,6 +22,7 @@
 
 namespace xs_core {
 
+
 template <class MM, typename NUM>
 class mat2u {
 public:
@@ -33,22 +34,51 @@ public:
     const unsigned height = 2;
 };
 
-template <class U>
+
+template <class U, typename NUM, class T>
 class Mat2Base {
 public:
     const unsigned width(void) {return 2;}
     const unsigned height(void) {return 2;}
     bool is_square(void) {return true;}
+    inline T operator+(const T& rhs) {
+        T t;
+        t.u.data.v += rhs.u.data.v;
+        return t;
+    }
+    inline T operator-(const T& rhs) {
+        T t;
+        t.u.data.v -= rhs.u.data.v;
+        return t;
+    }
+    inline T operator*(const NUM rhs) { // scalar product
+        T t;
+        t.u.data.v *= rhs.u.data.v;
+        return t;
+    }
+    inline T operator*(const T& rhs) { // matrix product
+        T t;
+        t.u.data.v *= rhs.u.data.v;
+        return t;
+    }
 };
 
 
-class Mat2i: public Mat2Base<mat2u<__m128i, int>> { // 2x2 int
+class Mat2i: public Mat2Base<mat2u<__m128i, int>, int, Mat2i> { // 2x2 int
 public:
+    inline Mat2i operator+=(const Mat2i& rhs);
+    inline Mat2i operator-=(const Mat2i& rhs);
+    inline Mat2i operator*=(const int rhs);
+    inline Mat2i operator*=(const Mat2i& rhs);
 };
 
 
-class Mat2f: public Mat2Base<mat2u<__m128, float>> { // 2x2 float
+class Mat2f: public Mat2Base<mat2u<__m128, float>, float, Mat2f> { // 2x2 float
 public:
+    inline Mat2f operator+=(const Mat2f& rhs);
+    inline Mat2f operator-=(const Mat2f& rhs);
+    inline Mat2f operator*=(const float rhs);
+    inline Mat2f operator*=(const Mat2f& rhs);
 };
 
 
