@@ -15,8 +15,8 @@
 * ------------------------------------------------------------------------- */
 
 
-#ifndef XS_CONSOLE__
-#define XS_CONSOLE__
+#ifndef XS_CORE_CONSOLE__
+#define XS_CORE_CONSOLE__
 
 #include <string>
 #include <iostream>
@@ -90,4 +90,4 @@ public:
 
 
 } // xs_core
-#endif // XS_CONSOLE__
+#endif // XS_CORE_CONSOLE__
