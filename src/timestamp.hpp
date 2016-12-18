@@ -39,8 +39,6 @@ public:
         timeinfo = localtime(&this->ts);
         this->ts = strftime(buffer, 80, this->ts_fmt, timeinfo);
     }
-    //const char to_char(void);
-
     const std::string to_string(void) const {return ctime(&this->ts);}
     std::string to_string(void) {return ctime(&this->ts);}
     inline bool operator==(const TimeStamp &rhs) {return this->ts == rhs.ts;}
