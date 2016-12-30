@@ -146,7 +146,7 @@ public:
 
 
 class RGB8: RGB_Base<char>, public _8bitColBase<RGB8> { // 8bit rgb
-public:
+protected:
     char3u u;
 public:
     operator RGBA8();
@@ -223,6 +223,7 @@ public:
 
 
 class RGBA16: RGBA_Base<short>, public _16bitColBase<RGBA16> { // 16 bit rgba
+protected:
     short4u u;
 public:
     operator RGB8();
