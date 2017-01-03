@@ -82,7 +82,6 @@ public:
         T t;
         return t;
     }
-    inline bool operator!=(const T &rhs) {return !this->operator==(rhs);}
 };
 
 
@@ -191,7 +190,7 @@ public:
         return this.data.a[0] == rhs.u.data.a[0] &&
             this.u.data.a[1] == rhs.u.data.a[1];
     }
-    //inline bool operator!=(const T &rhs);
+    inline bool operator!=(const T &rhs) {return !this->operator==(rhs);}
     inline void XX(void) {
         __m64 m = _mm_set_pi32(this->u.data.a[0]);
         this->u.data.v = m;
