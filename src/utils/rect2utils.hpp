@@ -19,6 +19,9 @@
 #ifndef XS_CORE_UTILS_RECT2UTILS__
 #define XS_CORE_UTILS_RECT2UTILS__
 
+#include "../vec/vec2.hpp"
+#include "../vec/vec4.hpp"
+
 namespace xs_core {
 
 
@@ -154,6 +157,13 @@ public:
         v.set(this->btm[2], this->btm[3]);
         return v;
     }
+    const V2 size(void) {
+        V2 s;
+        v.set(this->top[2] - this->top[0], this->btm[1] - this->top[1]);
+        return v;
+    }
+    const unsigned width(void) {return this->top[2] - this->top[0];}
+    const unsigned height(void) {return this->btm[1] - this->top[1];}
     inline bool operator==(const T& rhs) {
         return this->top == rhs.top && this->btm == rhs.btm;
     }
@@ -163,7 +173,6 @@ public:
 };
 
 
-/*
 class Rect2i: _BaseRect2<int, Vec2i, Vec4i, Rect2i> {
 public:
 };
@@ -172,7 +181,7 @@ public:
 class Rect2f: public _BaseRect2<float, Vec2f, Vec4f, Rect2f> {
 public:
 };
-*/
+
 
 
 } // xs_core
