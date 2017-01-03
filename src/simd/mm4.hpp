@@ -27,7 +27,7 @@ float _hadd4f(__m128 v);
 int _hadd4i(__m128i v);
 
 
-typedef struct {
+struct float4u{
     union {
         __m128 v;
         float a[4]; // for access by index
@@ -37,10 +37,10 @@ typedef struct {
             (this->data.a[2] + this->data.a[3]);
         return t;
     }
-} float4u;
+};
 
 
-typedef struct {
+struct int4u{
     union {
         __m128i v;
         int a[4]; // for access by index
@@ -50,7 +50,7 @@ typedef struct {
             (this->data.a[2] + this->data.a[3]);
         return t;
     }
-} int4u;
+};
 
 
 template <class NUM, class T>

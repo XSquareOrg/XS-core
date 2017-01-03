@@ -27,7 +27,7 @@ double _hadd2d(__m128 v);
 int _hadd2i(__m64 v);
 
 
-typedef struct {
+struct double2u {
     union {
         __m128d v;
         double a[2]; // for access by index
@@ -36,10 +36,10 @@ typedef struct {
         double t = (this->data.a[0] + this->data.a[1]);
         return t;
     }
-} double2u;
+};
 
 
-typedef struct {
+struct int2u{
     union {
         __m64 v;
         int a[2]; // for access by index
@@ -48,7 +48,7 @@ typedef struct {
         int t = (this->data.a[0] + this->data.a[1]);
         return t;
     }
-} int2u;
+};
 
 
 template <class NUM, class T>

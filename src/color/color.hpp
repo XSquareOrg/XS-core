@@ -22,6 +22,39 @@
 
 namespace xs_core {
 
+
+struct char3u{
+    union {
+        __m64 v;
+        char a[3];
+    } data;
+};
+
+
+struct char4u{
+    union {
+        __m64 v;
+        char a[4];
+    } data;
+};
+
+
+struct short3u{
+    union {
+        __m64 v;
+        short a[3];
+    } data;
+};
+
+
+struct short4u{
+    union {
+        __m64 v;
+        short a[4];
+    } data;
+};
+
+
 // forward declarations
 class RGB8;
 class RGBA8;
@@ -29,38 +62,7 @@ class RGB16;
 class RGBA16;
 
 
-typedef struct {
-    union {
-        __m64 v;
-        char a[3];
-    } data;
-} char3u;
-
-
-typedef struct {
-    union {
-        __m64 v;
-        char a[4];
-    } data;
-} char4u;
-
-
-typedef struct {
-    union {
-        __m64 v;
-        short a[3];
-    } data;
-} short3u;
-
-
-typedef struct {
-    union {
-        __m64 v;
-        short a[4];
-    } data;
-} short4u;
-
-
+/* ---- Bases --------------------------------------------------------------- */
 template <class T>
 class _rgb_a_com { // common to both rgb & rgba types
 public:
@@ -144,7 +146,7 @@ public:
     }
 };
 
-
+/* ---- 8 bit --------------------------------------------------------------- */
 class RGB8: RGB_Base<char>, public _8bitColBase<RGB8> { // 8bit rgb
 protected:
     char3u u;
@@ -192,8 +194,7 @@ public:
 };
 
 
-// 16 bit RGB/RGBA classes
-// Data is packed as a short int
+/* ---- 16 bit (packed as a short int) -------------------------------------- */
 class RGB16: RGB_Base<short>, public _16bitColBase<RGB16> { // 16bit rgb
 protected:
     short3u u;
@@ -258,6 +259,9 @@ public:
     inline bool operator!=(const RGB16& rhs);
 };
 
+// aliases
+// typedef RGB16 RGB;
+// typedef RGBA16 RGBA:
 
 } // xs_core
 #endif // XS_CORE_COLOR__

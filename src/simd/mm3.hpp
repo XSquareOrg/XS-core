@@ -27,7 +27,7 @@ float _hadd3f(__m128 v);
 int _hadd3i(__m128i v);
 
 
-typedef struct {
+struct float3u{
     union {
         __m128 v;
         float a[3]; // for access by index
@@ -36,10 +36,10 @@ typedef struct {
         float t = (this->data.a[0] + this->data.a[1]) + this->data.a[2];
         return t;
         }
-} float3u;
+};
 
 
-typedef struct {
+struct int3u{
     union {
         __m128i v;
         int a[3]; // for access by index
@@ -48,7 +48,7 @@ typedef struct {
         int t = (this->data.a[0] + this->data.a[1]) + this->data.a[2];
         return t;
         }
-} int3u;
+};
 
 
 template <typename NUM, class T>
