@@ -159,8 +159,8 @@ public:
     }
     const V2 size(void) {
         V2 s;
-        v.set(this->top[2] - this->top[0], this->btm[1] - this->top[1]);
-        return v;
+        s.set(this->top[2] - this->top[0], this->btm[1] - this->top[1]);
+        return s;
     }
     const unsigned width(void) {return this->top[2] - this->top[0];}
     const unsigned height(void) {return this->btm[1] - this->top[1];}
