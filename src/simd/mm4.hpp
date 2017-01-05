@@ -85,6 +85,26 @@ public:
         if (!v[2]) this->u.data.a[2] = 0;
         if (!v[3]) this->u.data.a[1] = 0;
     }
+    inline T operator+(const NUM rhs[4]) {
+        T x = this->operator+=(rhs);
+        return x;
+    }
+    inline T operator-(const NUM rhs[4]) {
+        T x = this->operator-=(rhs);
+        return x;
+    }
+    inline T operator*(const NUM rhs[4]) {
+        T x = this->operator*=(rhs);
+        return x;
+    }
+    inline T operator/(const NUM rhs[4]) {
+        T x = this->operator/=(rhs);
+        return x;
+    }
+    inline T operator^(const NUM rhs[4]) {
+        T x = this->operator^=(rhs);
+        return x;
+    }
 };
 
 
@@ -113,6 +133,41 @@ public:
         this->u.data.v = _mm_shuffle_ps(m, m, _MM_SHUFFLE(d[2], d[1], d[0], d[3]));
     }
     inline void reverse(void) {this->u.data.v = _mm_setr_ps(this->u.data.v);}
+
+    /* ---- float[4] operators (mm4 operators are in mm3and4com) ---- */
+    inline bool operator==(const float rhs[4]) {
+        __m128 m = _mm_set_ps(rhs[3], rhs[2], rhs[1], rhs[0]);
+        return _mm_cmpeq_ps(this->u.data.v, m);
+    }
+    inline bool operator!=(const float rhs[4]) {
+        __m128 m = _mm_set_ps(rhs[3], rhs[2], rhs[1], rhs[0]);
+        return _mm_cmpneq_ps(this->u.data.v, m);
+    }
+    inline T operator+=(const float rhs[4]) {
+        __m128 m = _mm_set_ps(rhs[3], rhs[2], rhs[1], rhs[0]);
+        this->u.data.v = _mm_add_ps(this->u.data.v, m);
+        return *this;
+    }
+    inline T operator-=(const float rhs[4]) {
+        __m128 m = _mm_set_ps(rhs[3], rhs[2], rhs[1], rhs[0]);
+        this->u.data.v = _mm_sub_ps(this->u.data.v, m);
+        return *this;
+    }
+    inline T operator*=(const float rhs[4]) {
+        __m128 m = _mm_set_ps(rhs[3], rhs[2], rhs[1], rhs[0]);
+        this->u.data.v = _mm_mul_ps(this->u.data.v, m);
+        return *this;
+    }
+    inline T operator/=(const float rhs[4]) {
+        __m128 m = _mm_set_ps(rhs[3], rhs[2], rhs[1], rhs[0]);
+        this->u.data.v = _mm_div_ps(this->u.data.v, m);
+        return *this;
+    }
+    inline T operator^=(const float rhs[4]) {
+        __m128 m = _mm_set_ps(rhs[3], rhs[2], rhs[1], rhs[0]);
+        this->u.data.v = _mm_xor_ps(this->u.data.v, m);
+        return *this;
+    }
 };
 
 
@@ -139,6 +194,43 @@ public:
         this->u.data.v = _mm_shuffle_epi32(m, _MM_SHUFFLE(d[2], d[1], d[0], d[3]));
     }
     inline void reverse(void) {this->u.data.v = _mm_setr_epi32(this->u.data.v);}
+
+    /* ---- int[3] operators (mm4 operators are in mm3and4com) ---- */
+    inline T operator==(const int rhs[4]) {
+        __m128i m = _mm_set_epi32(rhs[3], rhs[2], rhs[1], rhs[0]);
+        return 1;
+        // FIXME
+    }
+    inline T operator!=(const int rhs[4]) {
+        __m128i m = _mm_set_epi32(rhs[3], rhs[2], rhs[1], rhs[0]);
+        // FIXME
+        return 1;
+    }
+    inline T operator+=(const int rhs[4]) {
+        __m128i m = _mm_set_epi32(rhs[3], rhs[2], rhs[1], rhs[0]);
+        this->u.data.v = _mm_add_epi32(this->u.data.v, m);
+        return *this;
+    }
+    inline T operator-=(const int rhs[4]) {
+        __m128i m = _mm_set_ps(rhs[3], rhs[2], rhs[1], rhs[0]);
+        this->u.data.v = _mm_sub_epi32(this->u.data.v, m);
+        return *this;
+    }
+    inline T operator*=(const int rhs[4]) {
+        __m128i m = _mm_set_epi32(rhs[3], rhs[2], rhs[1], rhs[0]);
+        this->u.data.v = _mm_mul_epi32(this->u.data.v, m);
+        return *this;
+    }
+    inline T operator/=(const int rhs[4]) {
+        __m128i m = _mm_set_epi32(rhs[3], rhs[2], rhs[1], rhs[0]);
+        this->u.data.v = _mm_div_epi32(this->u.data.v, m);
+        return *this;
+    }
+    inline T operator^=(const int rhs[4]) {
+        __m128i m = _mm_set_epi32(rhs[3], rhs[2], rhs[1], rhs[0]);
+        this->u.data.v = _mm_xor_si128(this->u.data.v, m);
+        return *this;
+    }
 };
 
 

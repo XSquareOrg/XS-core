@@ -78,10 +78,44 @@ public:
         t.swizzle(d);
         return t;
     }
-    inline void XY(void) {
+    /* ---- Swizzles ---- */
+    inline T XY(void) {return *this;}
+    inline T XX(void) {
         T t;
+        t.fill(this->u.data.a[0]);
         return t;
     }
+    inline T YY(void) {
+        T t;
+        t.fill(this->u.data.a[1]);
+        return t;
+    }
+    inline T YX(void) {
+        T t = *this;
+        t.reverse();
+        return t;
+    }
+    inline T operator+(const NUM rhs[2]) {
+        T x = this->operator+=(rhs);
+        return x;
+    }
+    inline T operator-(const NUM rhs[2]) {
+        T x = this->operator-=(rhs);
+        return x;
+    }
+    inline T operator*(const NUM rhs[2]) {
+        T x = this->operator*=(rhs);
+        return x;
+    }
+    inline T operator/(const NUM rhs[2]) {
+        T x = this->operator/=(rhs);
+        return x;
+    }
+    inline T operator^(const NUM rhs[2]) {
+        T x = this->operator^=(rhs);
+        return x;
+    }
+
 };
 
 
@@ -97,36 +131,77 @@ public:
     inline void fill(const float n) {this->u.data.v = _mm_set1_pd(n);}
     void set(const double x, const double y) {this->u.data.v = _mm_set_pd(x, y);}
     void set(const float x, const float y) {this->u.data.v = _mm_set_pd(x, y);}
-    void set(double n[2]) {this->u.data.v = _mm_set_pd(n[0], n[1]);}
-    void set(float n[2]) {this->u.data.v = _mm_set_pd(n[0], n[1]);}
+    void set(const double n[2]) {this->u.data.v = _mm_set_pd(n[0], n[1]);}
+    void set(const float n[2]) {this->u.data.v = _mm_set_pd(n[0], n[1]);}
     inline void zero(void) {this->u.data.v = _mm_setzero_pd();}
     inline void swizzle(int d[2]);
     inline void swizzle(int x, int y);
     inline void reverse(void) {this->u.data.v = _mm_setr_pd(this->u.data.v);}
+
+    /* ---- += ---- */
     inline T operator+=(const T &rhs) {
         this->u.data.v = _mm_add_pd(this->u.data.v, rhs.u.data.v);
     }
+    inline T operator +=(const double rhs[2]) {
+        __m128d m = _mm_set_pd(rhs[0], rhs[1]);
+        this->u.data.v = _mm_add_pd(this->u.data.v, m);
+    }
+
+    /* ---- -= ---- */
     inline T operator-=(const T &rhs) {
         this->u.data.v = _mm_sub_pd(this->u.data.v, rhs.u.data.v);
     }
+    inline T operator -=(const double rhs[2]) {
+        __m128d m = _mm_set_pd(rhs[0], rhs[1]);
+        this->u.data.v = _mm_sub_pd(this->u.data.v, m);
+    }
+
+    /* ---- *= ---- */
     inline T operator*=(const T &rhs) {
         this->u.data.v = _mm_mul_pd(this->u.data.v, rhs.u.data.v);
     }
+    inline T operator *=(const double rhs[2]) {
+        __m128d m = _mm_set_pd(rhs[0], rhs[1]);
+        this->u.data.v = _mm_mul_pd(this->u.data.v, m);
+    }
+
+    /* ---- /= ---- */
     inline T operator/=(const T &rhs) {
         this->u.data.v = _mm_div_pd(this->u.data.v, rhs.u.data.v);
     }
+    inline T operator /=(const double rhs[2]) {
+        __m128d m = _mm_set_pd(rhs[0], rhs[1]);
+        this->u.data.v = _mm_div_pd(this->u.data.v, m);
+    }
+
+    /* ---- ^= ---- */
     inline T operator^=(const T &rhs) {
         this->u.data.v = _mm_xor_pd(this->u.data.v, rhs.u.data.v);
     }
+    inline T operator^=(const double rhs[2]) {
+        __m128d m = _mm_set_pd(rhs[0], rhs[1]);
+        this->u.data.v = _mm_xor_pd(this->u.data.v, m);
+    }
+
+    /* ---- == ---- */
     inline bool operator==(const T &rhs) {
-        return this->u.data.v = _mm_cmpeq_pd(this->u.data.v, rhs.u.data.v);
+        return _mm_cmpeq_pd(this->u.data.v, rhs.u.data.v);
     }
+    inline bool operator==(const double rhs[2]) {
+        __m128d m = _mm_set_pd(rhs[0], rhs[1]);
+        return _mm_cmpd_pd(this->u.data.v, m);
+    }
+
+    /* ---- != ---- */
     inline bool operator!=(const T &rhs) {
-        return this->u.data.v = _mm_cmpneq_pd(this->u.data.v, rhs.u.data.v);
+        return _mm_cmpneq_pd(this->u.data.v, rhs.u.data.v);
     }
-    inline void XX(void);
-    inline void YY(void);
-    inline void YX(void);
+    inline bool operator!=(const double rhs[2]) {
+        __m128d m = _mm_set_pd(rhs[0], rhs[1]);
+        return _mm_cmpneq_pd(this->u.data.v, m);
+    }
+
+
 };
 
 
@@ -161,51 +236,82 @@ public:
         this->u.data.v = _mm_setr_pi32(this->u.data.v);
         _mm_empty();
     }
+
+    /* ---- += ---- */
     inline T operator+=(const T &rhs) {
         this->u.data.v = _mm_add_pi32(this->u.data.v, rhs.u.data.v);
         _mm_empty();
         return *this;
     }
+    inline T operator+=(const int rhs[2]) {
+        __m64 m = _mm_set_pi32(rhs[0], rhs[1]);
+        this->u.data.v = _mm_add_pi32(this->u.data.v, m);
+        _mm_empty();
+        return *this;
+    }
+
+    /* ---- -= ---- */
     inline T operator-=(const T &rhs) {
         this->u.data.v = _mm_sub_pi32(this->u.data.v, rhs.u.data.v);
         _mm_empty();
         return *this;
     }
+    inline T operator-=(const int rhs[2]) {
+        __m64 m = _mm_set_pi32(rhs[0], rhs[1]);
+        this->u.data.v = _mm_sub_pi32(this->u.data.v, m);
+        _mm_empty();
+        return *this;
+    }
+
+    /* ---- *= ---- */
     inline T operator*=(const T &rhs) {
         this->u.data.a[0] *= rhs.u.data.a[0];
         this->u.data.a[1] *= rhs.u.data.a[1];
         return *this;
     }
+    inline T operator*=(const int rhs[2]) {
+        this->u.data.a[0] *= rhs[0];
+        this->u.data.a[1] *= rhs[1];
+        return *this;
+    }
+
+    /* ---- /= ---- */
     inline T operator/=(const T &rhs) {
         this->u.data.a[0] /= rhs.u.data.a[0];
         this->u.data.a[1] /= rhs.u.data.a[1];
         return *this;
     }
+    inline T operator/=(const int rhs[2]) {
+        this->u.data.a[0] /= rhs[0];
+        this->u.data.a[1] /= rhs[1];
+        return *this;
+    }
+
+    /* ---- ^= ---- */
     inline T operator^=(const T &rhs) {
         __m64 m = _mm_xor_si64(this->u.data.v, rhs.u.data.v);
         this->u.data.v = m;
         _mm_empty();
     }
+    inline T operator^=(const int rhs[2]) {
+        __m64 mr = _mm_set_pi32(rhs[0], rhs[1]);
+        __m64 m = _mm_xor_si64(this->u.data.v, mr);
+        this->u.data.v = m;
+        _mm_empty();
+    }
+
+    /* ---- == ---- */
     inline bool operator==(const T &rhs) {
-        return this.data.a[0] == rhs.u.data.a[0] &&
+        return this.u.data.a[0] == rhs.u.data.a[0] &&
             this.u.data.a[1] == rhs.u.data.a[1];
     }
+    inline bool operator==(const int rhs[2]) {
+        return this.u.data.a[0] == rhs[0] && this->u.data.a[1] == rhs[1];
+    }
+
+    /* ---- != ---- */
     inline bool operator!=(const T &rhs) {return !this->operator==(rhs);}
-    inline void XX(void) {
-        __m64 m = _mm_set_pi32(this->u.data.a[0]);
-        this->u.data.v = m;
-        _mm_empty();
-    }
-    inline void YY(void) {
-        __m64 m = _mm_set_pi32(this->u.data.a[1]);
-        this->u.data.v = m;
-        _mm_empty();
-    }
-    inline void YX(void) {
-        __m64 m = _mm_setr_pi32(this->u.data.v);
-        this->u.data.v = m;
-        _mm_empty();
-    }
+    inline bool operator!=(const int rhs[2]) {return !this->operator==(rhs);}
 };
 
 

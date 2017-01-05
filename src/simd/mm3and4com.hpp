@@ -108,6 +108,9 @@ public:
         __m128 m = _mm_setzero_si128();
         return _mm_cmpeq_ps(this->u.data.v, m);
     }
+    // TODO add == and !=
+    inline T operator==(const T &rhs);
+    inline T operator!=(const T &rhs);
     inline T operator+=(const T &rhs) {
         this->u.data.v = _mm_add_epi32(this->u.data.v, rhs.u.data.v);
         return *this;
