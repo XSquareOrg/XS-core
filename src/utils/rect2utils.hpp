@@ -45,140 +45,113 @@ struct edges{
 };
 
 
-class Vec2f;
+class Vec2d;
 class Vec2i;
 class Vec4f;
 class Vec4i;
 
 
-template <class NUM, class V2, class V4, class T>
+/* Non-rotatable rectangle base class. */
+template <class NUM, class V2, class T>
 struct _BaseRect2 {
 protected:
-    V4 top; // tl x, tl y, tr x, tr y
-    V4 btm; // bl x, bl y, br x, br y
+    V2 pos;  // position of top left corner
+    V2 size; // width, height
+    enum {TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT} anchor;
 public:
-    inline void translate(const NUM x, const NUM y) {
-        V4 vt;
-        vt.set(x, y, x, y);
-        this->top += vt;
-        this->btm += vt;
+    bool is_square(void) {return this->size[0] == this->size[1];}
+    const bool is_rotatable(void) const {return false;}
+    /* ---- Size, Width, Height properties ---- */
+    V2 get_size(void) {return this->_size;}
+    void set_size(NUM x, NUM y) {
+        this->size[0] = (x >= 0) ? x : 0;
+        this->size[1] = (y >= 0) ? y : 0;
     }
-    inline void translate(const V2 v) {
-        V4 vt;
-        vt.set(v[0], v[1], v[0], v[1]);
-        this->top += vt;
-        this->btm += vt;
+    void set_size(V2 size) {this->set_size(size[0], size[1]);}
+    NUM get_width(void) {return this->_size[0];}
+    void set_width(NUM w) {this->size[0] = (w >= 0) ? w : 0;}
+    NUM get_height(void) {return this->_size[1];}
+    void set_height(NUM h) {this->size[1] = (h >= 0) ? h : 0;}
+    /* ---- Translation Funcs ---- */
+    void translate(const NUM x, const NUM y) {
+        this->pos[0] += x;
+        this->pos[1] += y;
     }
+    inline void translate(const V2& pos) {this->pos += pos;}
     T translated(const NUM x, const NUM y) {
-        V4 vt;
-        vt.set(x, y, x, y);
-        T rc;
-        rc.top = vt + this->top;
-        rc.btm = vt + this->btm;
-        return rc;
+        T rect = *this->rect;
+        rect.pos.set(x, y);
+        rect.pos += this->pos;
+        return rect;
     }
-    T translated(const V2 v) {
-        V4 vt;
-        vt.set(v[0], v[1], v[0], v[1]);
-        T rc;
-        rc.top = vt + this->top;
-        rc.btm = vt + this->btm;
-        return rc;
+    T translated(const V2& pos) {
+        T rect = *this->rect;
+        return rect.pos += pos;
     }
-    void scale_from_corner(const int corner, const NUM factor) {
-        switch (corner) {
-            case 1: {   // top l
-                V4 t;
-                t.fill(factor);
-                this->btm *= t;
-                t[0], t[1] = 1;
-                this->top *= t;
-            } case 2: { // top r
-                V4 t;
-                t.fill(factor);
-                this->btm *= t;
-                t[2], t[3] = 1;
-                this->top *= t;
-            } case 3: { // btm l
-                V4 t;
-                t.fill(factor);
-                this->top *= t;
-                t[0], t[1] = 1;
-                this->btm *= t;
-            } case 4: { // btm r
-                V4 t;
-                t.fill(factor);
-                this->top *= t;
-                t[2], t[3] = 1;
-                this->btm *= t;
-            }
+    /* ---- Collision Detection ---- */
+    bool is_inside(const V2 pt) {
+        if (pt[0] < this->pos[0]) return false;
+        else if (pt[0] > this->size[0]) return false;
+        else if (pt[1] < this->pos[1]) return false;
+        else if (pt[1] > this->size[1]) return false;
+        else return true;
+    }
+    bool is_outside(const V2 pt) {
+        if (pt[0] >= this->pos[0]) return false;
+        else if (pt[0] <= this->size[0]) return false;
+        else if (pt[1] >= this->pos[1]) return false;
+        else if (pt[1] <= this->size[1]) return false;
+        else return true;
+    }
+    //bool Rect2_has_intersection(const T& rhs); // TODO
+
+    /* ---- Vector Positions ------------------------------- */
+    V2 center(const bool local) {
+        if (local) return this->size / 2;
+        else return (this->size / 2) + this->pos;
+    }
+    /* ---- Corner Vector Positions ---- */
+    V2 top_left(const bool local) {
+        if (local) return this->pos;
+        else {
+            V2 v;
+            v.set(0, 0);
+            return v;
         }
     }
-    void scale_from_center(const NUM factor) {
-        V4 t;
-        t.fill(factor);
-        this->btm *= factor;
-        this->top *= factor;
-    }
-    /*
-    void scale_from_point(const V2 point, const NUM factor) {
-        V4 t;
-        t.fill(factor);
-        this.btm *= factor;
-        this.top *= factor;
-        // FIXME
-    }
-    */
-    V2 center(void) {
-        V2 tv;
-        V2 bv;
-        tv.set(this->top[0], this->top[1]);
-        bv.set(this->btm[2], btm[3]);
-        tv += bv;
-        return tv / 2;
-    }
-    V2 top_left(void) {
+    V2 top_right(const bool local) {
         V2 v;
-        v.set(this->top[0], this->top[1]);
+        v.set(this->size[0], this->pos[1]);
+        if (!local) v += this->pos;
         return v;
     }
-    V2 top_right(void) {
+    V2 btm_left(const bool local) {
         V2 v;
-        v.set(this->top[2], this->top[3]);
+        v.set(this->pos[0], this->size[1]);
+        if (!local) v += pos;
         return v;
     }
-    V2 bottom_left(void) {
-        V2 v;
-        v.set(this->btm[0], this->btm[1]);
-        return v;
+    V2 btm_right(const bool local) {
+        if (local) return this->size;
+        else {
+            V2 v = *this->size;
+            v += this->pos;
+            return v;
+        }
     }
-    V2 bottom_right(void) {
-        V2 v;
-        v.set(this->btm[2], this->btm[3]);
-        return v;
-    }
-    const V2 size(void) {
-        V2 s;
-        s.set(this->top[2] - this->top[0], this->btm[1] - this->top[1]);
-        return s;
-    }
-    const unsigned width(void) {return this->top[2] - this->top[0];}
-    const unsigned height(void) {return this->btm[1] - this->top[1];}
     inline bool operator==(const T& rhs) {
         return this->top == rhs.top && this->btm == rhs.btm;
     }
-    inline bool operator!=(const T& rhs) {
-        return !this->operator==(rhs);
-    }
+    inline bool operator!=(const T& rhs) {return !this->operator==(rhs);}
 };
 
 
-class Rect2i: _BaseRect2<int, Vec2i, Vec4i, Rect2i> {
+class Rect2i: public _BaseRect2<int, Vec2i, Rect2i> {
 public:
 };
 
 
-class Rect2f: public _BaseRect2<float, Vec2f, Vec4f, Rect2f> {
+class Rect2d: public _BaseRect2<double, Vec2d, Rect2d> {
 public:
 };
 
