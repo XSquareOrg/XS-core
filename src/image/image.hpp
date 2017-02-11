@@ -27,25 +27,33 @@ class Vec2i;
 class ImageSection;
 
 
+
 class Image {
 protected:
-    enum {SINGLE_IMAGE, IMAGE_STRIP, IMAGE_GRID, GENERATED} image_type;
+    enum {SINGLE_IMAGE, IMAGE_STRIP, IMAGE_GRID, GENERATED} img_type;
+    enum {BW, GREYSCALE_8, COLOR_8, COLOR_16} colspc;
     bool animated = false;
+    /* grid size
+    * defaults to 1 (default is used for single_image)
+    * for image strip one axis must set to 1 (otherwise will be considered
+    *   an image grid)
+    */
     unsigned grid_sx, grid_sy = 1;
-    enum {BW, GREYSCALE_8, COLOR_8, COLOR_16} colspace;
+
     bool alpha = false;
     Vec2i _size;
     //std::string imgpath;
 public:
     friend class ImageSection;
-    bool is_generated(void) {return this->image_type == GENERATED;}
+    bool is_generated(void) {return this->img_type == GENERATED;}
     bool is_animated(void) {return this->animated = false;}
-    int colorspace(void) {return this->colspace;}
+    int colorspace(void) {return this->colspc;}
     bool has_alpha(void) {return this->alpha;}
     const Vec2i size(void) {return this->_size;}
     const int width(void) {return this->_size[0];}
     const int height(void) {return this->_size[1];}
     bool is_square(void) {return this->_size[0] == this->_size[1];}
+    bool size_is_pow_of_2(void);
     inline bool operator==(Image& rhs);
     inline bool operator!=(Image& rhs) {return !this->operator==(rhs);}
     // void reload(void);
