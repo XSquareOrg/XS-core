@@ -29,6 +29,7 @@ struct cache {
 protected:
     std::vector<T> items;
     unsigned clean_interval = 60;
+    bool paused = true;
 public:
     size_t size(void) {return this->items.size();}
     bool is_empty(void) {return this->items.empty();}
@@ -38,6 +39,7 @@ public:
         this->clean_interval = (i <= 60) ? 60 : i;
     }
     // when paused cleanup wont be called. useful for hand optomizing
+    bool cleanup_poll_is_paused(void) {return this->paused;}
     void pause_cleanup_poll(void) {this->paused = true;}
     void unpause_cleanup_poll(void) {this->paused = false;}
 };
