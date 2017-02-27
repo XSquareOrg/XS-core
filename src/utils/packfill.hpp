@@ -22,37 +22,37 @@
 namespace xs_core {
 
 // return pack
-template <typename NUM>
-const NUM* packed_2(const NUM x, const NUM y) {
-    NUM t[4] = {x, y};
+template <typename T>
+const T* packed_2(const T x, const T y) {
+    T t[4] = {x, y};
     return t;
 }
-template <typename NUM>
-const NUM* packed_3(const NUM x, const NUM y, const NUM z) {
-    NUM t[4] = {x, y, z};
+template <typename T>
+const T* packed_3(const T x, const T y, const T z) {
+    T t[4] = {x, y, z};
     return t;
 }
-template <typename NUM>
-const NUM* packed_4(const NUM x, const NUM y, const NUM z, const NUM w) {
-    NUM t[4] = {x, y, z, w};
+template <typename T>
+const T* packed_4(const T x, const T y, const T z, const T w) {
+    T t[4] = {x, y, z, w};
     return t;
 }
 
 
 // filling funcs
-template <typename NUM>
-const NUM* filled_2(const NUM v) {
-    NUM t[2] = {v, v};
+template <typename T>
+const T* filled_2(const T v) {
+    T t[2] = {v, v};
     return t;
 }
-template <typename NUM>
-const NUM* filled_3(const NUM v) {
-    NUM t[3] = {v, v, v};
+template <typename T>
+const T* filled_3(const T v) {
+    T t[3] = {v, v, v};
     return t;
 }
-template <typename NUM>
-const NUM* filled_4(const NUM v) {
-    NUM t[4] = {v, v, v, v,};
+template <typename T>
+const T* filled_4(const T v) {
+    T t[4] = {v, v, v, v,};
     return t;
 }
 
