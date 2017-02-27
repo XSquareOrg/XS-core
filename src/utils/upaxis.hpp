@@ -19,7 +19,9 @@
 
 namespace xs_core {
 
+
 class UpAxis {
+    // Object to set and define the upaxis of an object
     bool _invert = false;
     char _axis = 1;
 public:
@@ -39,13 +41,17 @@ public:
     void set_axis(const unsigned axis) {
         if (axis >= 0 || axis <= 2) this->_axis = axis;
     }
+    void set_axis(const unsigned axis, bool invert) {
+        if (axis >= 0 || axis <= 2) this->_axis = axis;
+        this->_invert = invert;
+    }
     void invert(void) {this->_invert = (this-_invert) ? false : true;}
     bool operator==(UpAxis &rhs) {
         return (this->_invert == rhs._invert && this->_axis == rhs._axis);
     }
     bool operator!=(UpAxis &rhs) {return !this->operator==(rhs);}
     operator int(void) {return (this->_invert) ? -this->_axis : this->_axis;}
-    operator unsigned(void) {return this->_axis;} // like abs/for index
+    operator unsigned(void) {return this->_axis;} // like abs -- for index
     operator const char*(void) const{
         if (this->_invert) {
             if (this->_axis == 1) {
@@ -66,6 +72,7 @@ public:
         }
     }
 };
+
 
 } // xs_core
 #endif // XS_CORE_UPAXIS__
