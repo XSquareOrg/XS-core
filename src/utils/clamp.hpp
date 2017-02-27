@@ -46,6 +46,12 @@ bool in_range(const NUM v, const NUM min, const NUM max) {
     return min <= v && v <= max;
 }
 
+template <typename NUM>
+NUM max(NUM a, NUM b) {return (a >= b) ? a : b;}
+
+template <typename NUM>
+NUM min(NUM a, NUM b) {return (a <= b) ? a : b;}
+
 
 } // xs_core
 #endif // CLAMPMATH__
