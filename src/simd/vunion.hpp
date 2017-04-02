@@ -29,10 +29,16 @@ struct _VUnion3 {
         NUM a[3];
         struct {NUM x, y, z;} b;
     } data;
-    NUM x(void) {return this->data.b.x;}
-    NUM y(void) {return this->data.b.y;}
-    NUM z(void) {return this->data.b.z;}
+    NUM X(void) {return this->data.b.x;}
+    NUM Y(void) {return this->data.b.y;}
+    NUM Z(void) {return this->data.b.z;}
     NUM& operator[](const unsigned i) {return this->data.a[i];}
+    NUM hadd(void) { // horizontal add
+        return (this->data.b.x + this->data.b.y) + this->data.b.z;
+    }
+    float havg(void) { // horizontal average
+        return ((this->data.b.x + this->data.b.y) + this->data.b.z) / 3;
+    }
 };
 
 
@@ -44,13 +50,43 @@ struct _VUnion4 {
         NUM a[4];
         struct {NUM x, y, z, w;} b;
     } data;
-    NUM x(void) {return this->data.b.x;}
+    NUM X(void) {return this->data.b.x;}
     NUM y(void) {return this->data.b.y;}
     NUM z(void) {return this->data.b.z;}
     NUM w(void) {return this->data.b.w;}
     NUM& operator[](const unsigned i) {return this->data.a[i];}
 
+    NUM hadd(void) { // horizontal add
+        return ((this->data.b.x + this->data.b.y) +
+                (this->data.b.z + this->data.b.w));
+    }
+    NUM havg(void) { // horizontal average with NUM as return type
+        return ((this->data.b.x + this->data.b.y) +
+                (this->data.b.z + this->data.b.w)) * 0.25;
+    }
+    float havg_float(void) { // horizontal average with float as return type
+        return ((this->data.b.x + this->data.b.y) +
+                (this->data.b.z + this->data.b.w)) * 0.25;
+    }
 };
+
+
+/* ---- eq and ne comparison between _VUnion3 and _VUnion4 types ------------ */
+// Note - T and U must have the same NUM type (ie char, int, float etc.)
+template <class T, class U>
+bool _vunion3_eq_vunion4(const T v3, const U v4) {
+    return (v3.data.b.x == v4.data.b.x &&
+            v3.data.b.y == v4.data.b.y &&
+            v3.data.b.z == v4.data.b.z);
+}
+
+template <class T, class U>
+bool _vunion3_neq_vunion4(const T v3, const U v4) {
+    return (v3.data.b.x != v4.data.b.x ||
+            v3.data.b.y != v4.data.b.y ||
+            v3.data.b.z != v4.data.b.z);
+}
+
 
 } // xs_core
 #endif // XS_CORE_VUNION__
