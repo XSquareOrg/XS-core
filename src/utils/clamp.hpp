@@ -46,11 +46,25 @@ bool in_range(const NUM v, const NUM min, const NUM max) {
     return min <= v && v <= max;
 }
 
+// max funcs
 template <typename NUM>
 NUM max(NUM a, NUM b) {return (a >= b) ? a : b;}
 
 template <typename NUM>
+NUM max3(NUM a, NUM b, NUM c) {return max(max(a, b), c);}
+
+template <typename NUM>
+NUM max4(NUM a, NUM b, NUM c, NUM d) {return max(max(a, b), max(c, d));}
+
+// min funcs
+template <typename NUM>
 NUM min(NUM a, NUM b) {return (a <= b) ? a : b;}
+
+template <typename NUM>
+NUM min3(NUM a, NUM b, NUM c) {return min(min(a, b), c);}
+
+template <typename NUM>
+NUM min4(NUM a, NUM b, NUM c, NUM d) {return min(min(a, b), min(c, d));}
 
 
 } // xs_core
