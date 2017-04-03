@@ -14,11 +14,12 @@
  *   not, see http://www.gnu.org/licenses/.                                 *
 * ------------------------------------------------------------------------- */
 
-
 #ifndef XS_CORE_IMAGETP__
 #define XS_CORE_IMAGETP__
 
 #include "../vec/vec2.hpp"
+#include "../color/colspace.hpp"
+#include "../color/colordata.hpp"
 
 namespace xs_core {
 
@@ -26,12 +27,14 @@ namespace xs_core {
 class Vec2i;
 class ImageSection;
 
+enum class img_type {SINGLE_IMAGE, IMAGE_STRIP, IMAGE_GRID};
+
+static DummyColData _dummy_imgcol_data;
 
 
 class Image {
 protected:
-    enum {SINGLE_IMAGE, IMAGE_STRIP, IMAGE_GRID, GENERATED} img_type;
-    enum {BW, GREYSCALE_8, COLOR_8, COLOR_16} colspc;
+    img_type imgtype;
     bool animated = false;
     /* grid size
     * defaults to 1 (default is used for single_image)
@@ -39,16 +42,80 @@ protected:
     *   an image grid)
     */
     unsigned grid_sx, grid_sy = 1;
-
-    bool alpha = false;
     Vec2i _size;
     //std::string imgpath;
+
+    /* ---- color space ----------------------- */
+    char colspc = -1;
+    union {                     // color_space
+        DummyColData a;              // -1
+        BWData b;               // 1
+        NonColorData c;         // 2
+        RGB8Data d;      // 3
+        RGBA8Data e;     // 4
+        RGB16Data f;     // 5
+        RGBA16Data g;    // 6
+    } data;
+
+    /*template <class T>
+    T& _active(void) {
+        switch (this->colspc) {
+            case 0: return this->data.b;
+            case 1: return this->data.c;
+            case 2: return this->data.d;
+            case 3: return this->data.e;
+            case 4: return this->data.f;
+            case 5: return this->data.g;
+            default: return this->data.a;
+        }
+        return -1; // error
+    }*/
+
+    template <class T>
+    void _assign_color_data(T color_data) {
+        if (this->colspc == 1) {
+            if (color_data.colorspace != 1)
+                // Replacing a DummyColData with a different type
+                _dummy_imgcol_data.decref();
+                _assign_color_data(color_data);
+        }    // else do nothing
+        else
+            this->_deref_active();
+            _assign_color_data(color_data);
+    }
+
+    void _deref(void) {
+        // deref active and set active to DummyCol
+        if (this->colspc != -1) // make sure were not already de-referenced
+            this->_deref_active();
+            this->colspc = -1;
+            this->data.a = _dummy_imgcol_data;
+            _dummy_imgcol_data.incref();
+    }
+
+private:
+    void _deref_active(void); // TODO
+
+    template <class T>
+    void _assign_data(T color_data) {
+        switch (color_data.colorspace) {
+            case 0: this->data.b = color_data;
+            case 1: this->data.c = color_data;
+            case 2: this->data.d = color_data;
+            case 3: this->data.e = color_data;
+            case 4: this->data.f = color_data;
+            case 5: this->data.g = color_data;
+            default: this->data.a = color_data;
+        }
+        this->colspc = color_data.colorspace();
+    }
+    /* ---------------------------------------- */
 public:
-    friend class ImageSection;
-    bool is_generated(void) {return this->img_type == GENERATED;}
+    //friend class ImageSection;
+    //bool is_generated(void) {return this->img_type == GENERATED;}
     bool is_animated(void) {return this->animated = false;}
     int colorspace(void) {return this->colspc;}
-    bool has_alpha(void) {return this->alpha;}
+    bool has_alpha(void) {return color_space_has_alpha(this->colspc);}
     const Vec2i size(void) {return this->_size;}
     const int width(void) {return this->_size[0];}
     const int height(void) {return this->_size[1];}
@@ -57,34 +124,6 @@ public:
     inline bool operator==(Image& rhs);
     inline bool operator!=(Image& rhs) {return !this->operator==(rhs);}
     // void reload(void);
-};
-
-
-class ImageSection {
-protected:
-    Image *img;
-    Vec2i _top_left;
-    Vec2i _btm_right;
-public:
-    ImageSection(Image& image, Vec2i top_left, Vec2i btm_right) {
-        // check if btm_right is bigger than top_left
-        if (btm_right[0] > top_left[0] && btm_right[1] > top_left[1]) {
-            // make sure btm_right is <= image size
-            //if (btm_right[0] > image.width())
-            //    btm_right[0] = image.width;
-            //if (btm_right[1] > image.height())
-            //    btm_right[1] = image.height();
-            this->img = &image;
-            this->_top_left = top_left;
-            this->_btm_right = btm_right;
-        }
-    }
-    const Vec2i size(void) {
-        Vec2i v = this->_btm_right;
-        return v -= this->_top_left;
-    }
-    const int width(void) {return this->_btm_right[0] - this->_top_left[0];}
-    const int height(void) {return this->_btm_right[1] - this->_top_left[1];}
 };
 
 
