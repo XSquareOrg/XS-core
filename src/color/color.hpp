@@ -19,44 +19,35 @@
 #define XS_CORE_COLOR__
 
 #include "../simd/simd_include.hpp"
+#include "../simd/vunion.hpp"
+#include "../utils/clamp.hpp"
+//#include "colspace.hpp"
 
 namespace xs_core {
 
 void _clamp_8bitcol(char n) { n = (n <= 0) ? 0 : n;}
 void _clamp_16bitcol(short n); // TODO
 
+// TODO char and short have good usable sse* hadd funcs (I think?)
 
-struct char3u{
-    union {
-        __m64 v;
-        char a[3];
-    } data;
+// 8-bit
+struct char3u: _VUnion3<__m64, char> { // RGB
+};
+struct char4u: _VUnion4<__m64, char> { // RGBA
+    char havg_no_alpha(void) { //
+        return ((this->data.b.x + this->data.b.y) + this->data.b.z) / 3;
+    }
 };
 
-
-struct char4u{
-    union {
-        __m64 v;
-        char a[4];
-    } data;
+// 16-bit
+struct short3u: _VUnion3<__m64, char> { // RGB
 };
 
-
-struct short3u{
-    union {
-        __m64 v;
-        short a[3];
-    } data;
+struct short4u: _VUnion4<__m64, char> { // RGBA
+    short havg_no_alpha(void) { //
+        return ((this->data.b.x + this->data.b.y) + this->data.b.z) / 3;
+    }
 };
-
-
-struct short4u{
-    union {
-        __m64 v;
-        short a[4];
-    } data;
-};
-
 
 // forward declarations
 class RGB8;
@@ -64,20 +55,22 @@ class RGBA8;
 class RGB16;
 class RGBA16;
 
+// FIXME fills need to take into account existing alpha values
+//  (need to add fill funcs for each rgba class?)
 
 /* ---- Bases --------------------------------------------------------------- */
 template <class T>
 class _rgb_a_com { // common to both rgb & rgba types
 public:
     // red channel
-    T R(void) {return this->u.data.a[0];}
-    const T R(void) const {return this->u.data.a[0];}
+    T R(void) {return this->u.data.b.x;}
+    const T R(void) const {return this->u.data.b.x;}
     // green channel
-    T G(void) {return this->u.data.a[1];}
-    const T G(void) const {return this->u.data.a[1];}
+    T G(void) {return this->u.data.b.y;}
+    const T G(void) const {return this->u.data.b.y;}
     // blue channel
-    T B(void) {return this->u.data.a[2];}
-    const T B(void) const {return this->u.data.a[2];}
+    T B(void) {return this->u.data.b.z;}
+    const T B(void) const {return this->u.data.b.z;}
 };
 
 
@@ -92,14 +85,22 @@ public:
         return t;
     }
     bool has_alpha(void) {return false;} // has alpha channel
+
+    void desaturate_avg(void) { // desaturate based on average
+        this->fill(this->u.havg());
+    }
+    void desaturate_lum(void) { // desaturate based on luminosity
+        this->fill(max3(this->u.data.b.x,
+                this->u.data.b.y, this->u.data.b.z));
+    }
 };
 
 
 template <class T>
 class RGBA_Base: public _rgb_a_com<T> { // base class for rgba types only
     const unsigned size(void) {return 4;}
-    T A(void) {return this->u.data.a[3];}
-    const T A(void) const {return this->u.data.a[3];}
+    T A(void) {return this->u.data.b.w;}
+    const T A(void) const {return this->u.data.b.w;}
     T BGRA(void) {
         T t = this;
         t.reverse;
@@ -108,6 +109,13 @@ class RGBA_Base: public _rgb_a_com<T> { // base class for rgba types only
     bool has_alpha(void) {return true;} // has alpha channel
     inline T blended(const T& rhs, const float offset);
 
+    void desaturate_avg(void) { // desaturate based on average
+        this->fill(this->u.havg_no_alpha());
+    }
+    void desaturate_lum(void) { // desaturate based on luminosity
+        this->fill(max4(this->u.data.b.x, this->u.data.b.y,
+                this->u.data.b.z, this->u.data.b.w));
+    }
 };
 
 
@@ -155,10 +163,11 @@ public:
 };
 
 /* ---- 8 bit --------------------------------------------------------------- */
-class RGB8: public RGB_Base<char>, public _8bitColBase<RGB8> { // 8bit rgb
-protected:
+class RGB8: public RGB_Base<char>, public _8bitColBase<RGB8> {
+protected:  // 8bit rgb
     char3u u;
 public:
+    const char colorspace(void) const {return 2;}
     friend class RGBA8;
     operator RGBA8();
     operator RGBA16();
@@ -182,7 +191,7 @@ public:
         // _mm_shuffle_pi8() // ssse3
         #else
         this->u.data.v = _mm_set_pi8(
-            this->u.data.a[2], this->u.data.a[1], this->u.data.a[0], 0,
+            this->u.data.b.z, this->u.data.b.y, this->u.data.b.x, 0,
             0, 0, 0, 0);
         _mm_empty();
         #endif
@@ -196,10 +205,11 @@ public:
 };
 
 
-class RGBA8: public RGBA_Base<char>, public _8bitColBase<RGBA8> { // 8bit rgba
-protected:
+class RGBA8: public RGBA_Base<char>, public _8bitColBase<RGBA8> {
+protected:  // 8bit rgba
     char4u u;
 public:
+    const char colorspace(void) const {return 3;}
     friend class RGB8;
     operator RGB8();
     operator RGB16();
@@ -213,48 +223,61 @@ public:
         this->u.data.v = _mm_set_pi8(r, g, b, a, 0, 0, 0, 0);
         _mm_empty();
     }
-    void invert(void) {
+    inline void invert(void) {
         __m64 x = _mm_set_pi8(255, 255, 255, 255, 0, 0, 0, 0);
         this->u.data.v = _mm_sub_pi8(this->u.data.v, x);
         _mm_empty();
     }
     inline void blend(const RGBA8 &rhs, const float offset);
     void reverse(void) {
-        #ifdef HAS_SSSE3__ // TODO
+        #ifdef XSKERN_HAS_SSSE3__ // TODO -- not implemented
         // this->u.data.v = _mm_shuffle_pi8();
         #else
         this->u.data.v = _mm_set_pi8(
-            this->u.data.a[2], this->u.data.a[1],
-            this->u.data.a[0], this->u.data.a[3],
+            this->u.data.b.z, this->u.data.b.y,
+            this->u.data.b.x, this->u.data.b.w,
             0, 0, 0, 0);
         _mm_empty();
         #endif
     }
-    void make_fully_opaque(void) {this->u.data.a[3] = 255;}
-    void make_fully_transparent(void) {this->u.data.a[3] = 0;}
-    bool is_opaque(void) {return this->u.data.a[3] == 255;}
+    void make_fully_opaque(void) {this->u.data.b.w = 255;}
+    void make_fully_transparent(void) {this->u.data.b.w = 0;}
+    bool is_opaque(void) {return this->u.data.b.w == 255;}
 
     inline bool operator==(const RGBA8& rhs) {
-        return (this->u.data.a[0] == rhs.u.data.a[0] &&
-                this->u.data.a[1] == rhs.u.data.a[1] &&
-                this->u.data.a[2] == rhs.u.data.a[2] &&
-                this->u.data.a[3] == rhs.u.data.a[3]);
+        return (this->u.data.b.x == rhs.u.data.b.x &&
+                this->u.data.b.y == rhs.u.data.b.y &&
+                this->u.data.b.z == rhs.u.data.b.z &&
+                this->u.data.b.w == rhs.u.data.b.w);
     }
     inline bool operator!=(const RGBA8& rhs) {return !this->operator==(rhs);}
+
+    /* --- RGBA8 - RGB8 eq/ne comparison --- */
     inline bool operator==(const RGB8& rhs) {
-        return (this->u.data.a[0] == rhs.u.data.a[0] &&
-                this->u.data.a[1] == rhs.u.data.a[1] &&
-                this->u.data.a[2] == rhs.u.data.a[2]);
+        //__m64 x = _mm_set_pi8(this->u.data.b.x, u.data.b.y, u.data.b.z, 0,
+        //    0, 0, 0, 0);
+        // _cmp_eq_(this.u.data.v, x)
+
+        // will use the above in the future but for now this is better
+        return _vunion3_eq_vunion4(rhs.u, this->u);
     }
-    inline bool operator!=(const RGB8& rhs) {return !this->operator==(rhs);}
+    inline bool operator!=(const RGB8& rhs) {
+        //__m64 x = _mm_set_pi8(this->u.data.b.x, u.data.b.y, u.data.b.z, 0,
+        //      0, 0, 0, 0);
+        // _cmp_ne_(this.u.data.v, x)
+
+        // will use the above in the future but for now this is better
+        return _vunion3_ne_vunion4(rhs.u, this->u);
+    }
 };
 
 
 /* ---- 16 bit (packed as a short int) -------------------------------------- */
-class RGB16: public RGB_Base<short>, public _16bitColBase<RGB16> { // 16bit rgb
-protected:
+class RGB16: public RGB_Base<short>, public _16bitColBase<RGB16> {
+protected:  // 16bit rgb
     short3u u;
 public:
+    const char colorspace(void) const {return 4;}
     friend class RGBA16;
     operator RGB8();
     void set(short n[3]) {set(n[0], n[1], n[2]);}
@@ -269,22 +292,25 @@ public:
     void invert(void);
     void reverse(void) {
         this->u.data.v = _mm_set_pi16(
-            this->u.data.a[0], this->u.data.a[1], this->u.data.a[2], 0);
+            this->u.data.b.x, this->u.data.b.y, this->u.data.b.z, 0);
         _mm_empty();
     }
     inline void blend(const RGB16 &rhs, const float offset);
 
     inline bool operator==(const RGB16& rhs); // defined in color.cpp
     inline bool operator!=(const RGB16& rhs) {return !this->operator==(rhs);}
+
+    /* --- RGB16 - RGBA16 eq/ne comparison --- */
     inline bool operator==(const RGBA16& rhs); // defined in color.cpp
     inline bool operator!=(const RGBA16& rhs) {return !this->operator==(rhs);}
 };
 
 
-class RGBA16: public RGBA_Base<short>, public _16bitColBase<RGBA16> { // 16 bit rgba
-protected:
+class RGBA16: public RGBA_Base<short>, public _16bitColBase<RGBA16> {
+protected:  // 16 bit rgba
     short4u u;
 public:
+    const char colorspace(void) const {return 5;}
     friend class RGB16;
     operator RGB8();
     operator RGBA8();
@@ -306,28 +332,35 @@ public:
     void invert(void);
     void reverse(void) {
         this->u.data.v = _mm_set_pi16(
-            this->u.data.a[2], this->u.data.a[1],
-            this->u.data.a[0], this->u.data.a[3]);
+            this->u.data.b.z, this->u.data.b.y,
+            this->u.data.b.x, this->u.data.b.w);
         _mm_empty();
     }
     inline void blend(const RGBA16 &rhs, const float offset);
-    //void make_fully_opaque(void) {this->u.data.a[3] = 1.0;}
-    //void make_fully_transparent(void) {this->u.data.a[3] = 1.0;}
-    //bool is_opaque(void) {return this->u.data.a[3] == 1.0f;}
+    //void make_fully_opaque(void) {this->u.data.b.w = 1.0;}
+    //void make_fully_transparent(void) {this->u.data.b.w = 1.0;}
+    //bool is_opaque(void) {return this->u.data.b.w == 1.0f;}
 
     inline bool operator==(const RGBA16& rhs) {
-        return (this->u.data.a[0] == rhs.u.data.a[0] &&
-                this->u.data.a[1] == rhs.u.data.a[1] &&
-                this->u.data.a[2] == rhs.u.data.a[2] &&
-                this->u.data.a[3] == rhs.u.data.a[3]);
+        return (this->u.data.b.x == rhs.u.data.b.x &&
+                this->u.data.b.y == rhs.u.data.b.y &&
+                this->u.data.b.z == rhs.u.data.b.z &&
+                this->u.data.b.w == rhs.u.data.b.w);
     }
     inline bool operator!=(const RGBA16& rhs) {return !this->operator==(rhs);}
+
+    /* --- RGBA16-RGB16 eq/ne comparison between --- */
+    // Note that input order is reversed
     inline bool operator==(const RGB16& rhs) {
-        return (this->u.data.a[0] == rhs.u.data.a[0] &&
-                this->u.data.a[1] == rhs.u.data.a[1] &&
-                this->u.data.a[2] == rhs.u.data.a[2]);
+        // x = _mm_set_pi16(this.u.b.z, this.u.b.y, this.u.b.x, 0);
+        // _mm_cmp_eq_(x, rhs.u.v);
+        return _vunion3_eq_vunion4(rhs.u, this->u);
     }
-    inline bool operator!=(const RGB16& rhs) {return !this->operator==(rhs);}
+    inline bool operator!=(const RGB16& rhs) {
+        // x = _mm_set_pi16(this.u.b.z, this.u.b.y, this.u.b.x, 0);
+        // _mm_cmp_ne_(x, rhs.u.v);
+        return _vunion3_ne_vunion4(rhs.u, this->u);
+    }
 };
 
 // aliases
