@@ -15,8 +15,8 @@
 * ------------------------------------------------------------------------- */
 
 
-#ifndef CLAMPMATH__
-#define CLAMPMATH__
+#ifndef XS_CORE_CLAMPMATH__
+#define XS_CORE_CLAMPMATH__
 
 namespace xs_core {
 
@@ -68,4 +68,4 @@ NUM min4(NUM a, NUM b, NUM c, NUM d) {return min(min(a, b), min(c, d));}
 
 
 } // xs_core
-#endif // CLAMPMATH__
+#endif // XS_CORE_CLAMPMATH__
