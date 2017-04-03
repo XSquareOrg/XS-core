@@ -81,7 +81,7 @@ bool _vunion3_eq_vunion4(const T v3, const U v4) {
 }
 
 template <class T, class U>
-bool _vunion3_neq_vunion4(const T v3, const U v4) {
+bool _vunion3_ne_vunion4(const T v3, const U v4) {
     return (v3.data.b.x != v4.data.b.x ||
             v3.data.b.y != v4.data.b.y ||
             v3.data.b.z != v4.data.b.z);
