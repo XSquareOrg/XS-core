@@ -20,6 +20,7 @@
 namespace xs_core {
 
 enum class color_space : char {
+    NONE =          -1, // special case for de-referenced items
     BW =            0,
     NON_COLOR_8 =   1,
     RGB_8 =         2,
