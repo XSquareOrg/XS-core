@@ -18,11 +18,27 @@
 #ifndef XS_CPPVER__
 #define XS_CPPVER__
 
-/* check for cpp11 features */
+#include "../xs_build_cfg.h"
+
+/* check if we have cpp11 features */
 #if defined(__cplusplus) && !(__cplusplus >= 201103L) || \
         defined(_MSC_VER) && !(_MSC_VER >= 1800)
     #error Requires c++11 or greater features (try compiling with -std=c++11)
 #endif
 
+#define version_range_chk(a, b, msc_a, msc_b) \
+    return (__cplusplus >= a || __cplusplus <= b) || \
+    defined(_MSC_VER) && (_MSC_VER >= msc_a || _MSC_VER <= _msc_b)
 
-#endif
+
+// TODO Check if we should try to build for a specific version
+
+
+// TODO test for cpp14 and cpp17 for now just set these to false
+#define XS_KERN_HAS_CPP_14 false
+#define XS_KERN_HAS_CPP_17 false
+
+
+#undef force_cpp_14_chk
+
+#endif // XS_CPPVER__
