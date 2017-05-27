@@ -52,6 +52,21 @@ public:
         u.data.v = m;
         return sqrt(u.hadd()); // return sqrt(_hadd4f(m));
     }
+    Vec4f operator+=(const Vec4f v) {
+        __m128 m = _mm_add_ps(this->u.data.v, v.u.data.v);
+        u.data.v = m;
+        return *this;
+    }
+    Vec4f operator-=(const Vec4f v) {
+        __m128 m = _mm_sub_ps(this->u.data.v, v.u.data.v);
+        u.data.v = m;
+        return *this;
+    }
+    Vec4f operator*=(const Vec4f v) {
+        __m128 m = _mm_mul_ps(this->u.data.v, v.u.data.v);
+        u.data.v = m;
+        return *this;
+    }
 };
 
 
@@ -75,6 +90,17 @@ public:
         u.data.v = m;
         return sqrt(u.hadd()); // return sqrt(_hadd4i(m));
     }
+    Vec4i operator+=(const Vec4i v) {
+        __m128i m = _mm_add_epi32(this->u.data.v, v.u.data.v);
+        u.data.v = m;
+        return *this;
+    }
+    Vec4i operator-=(const Vec4i v) {
+        __m128i m = _mm_sub_epi32(this->u.data.v, v.u.data.v);
+        u.data.v = m;
+        return *this;
+    }
+
 };
 
 
