@@ -31,6 +31,26 @@
     defined(_MSC_VER) && (_MSC_VER >= msc_a || _MSC_VER <= _msc_b)
 
 
+/* ---- Compiler tests ------------------------------------------------------ */
+// TODO _MSVC compiler
+
+#ifdef __clang__
+#define XS_KERN_COMPILER 3
+#endif
+
+#ifdef __INTEL_COMPILER
+#define XS_KERN_COMPILER 2
+#endif
+
+#if defined(__GNUC__) && !defined(XS_KERN_COMPILER)
+#define XS_KERN_COMPILER 1
+#endif
+
+#ifndef XS_KERN_COMPILER
+#define XS_KERN_COMPILER 0 // Unknown
+#endif
+
+
 // TODO Check if we should try to build for a specific version
 
 
