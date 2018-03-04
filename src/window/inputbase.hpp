@@ -28,31 +28,45 @@ protected:
     Vec2i pos;
     struct {bool l, r, m;} pressed;
     struct {int lr, ud;} scrolled;
+
 public:
     virtual void _update(void);
+
     Vec2i position(void) {return this->pos;}
     // button pressed
+
     bool has_pressed(void) {
         return (this->pressed.l || this->pressed.r || this->pressed.m);
     }
+
     bool left_ispressed(void) {return this->pressed.l;}
+
     bool right_ispressed(void) {return this->pressed.r;}
+
     bool middle_ispressed(void) {return this->pressed.m;}
+
     // scroll
     bool any_scrolled(void) {
         return this->scrolled.ud != 0 || this->scrolled.lr != 0;
     }
+
     bool is_scrolled_left(void) {return this->scrolled.lr == -1;}
+
     bool is_scrolled_right(void) {return this->scrolled.lr == 1;}
+
     bool is_scrolled_up(void) {return this->scrolled.ud == -1;}
+
     bool is_scrolled_down(void) {return this->scrolled.ud == 1;}
 };
 
 
-typedef struct {
-    bool shift=false, ctrl=false, alt=false;
+struct KbdMods{
+    bool shift=false;
+    bool ctrl=false;
+    bool alt=false;
+
     bool any_pressed(void) {return (this->shift || this->ctrl || this->alt);}
-} KbdMods;
+};
 
 
 
@@ -85,23 +99,31 @@ protected:
     KeyState ks;
     KbdMods left, right; // modifiers
     void _clear_state(void);
+
 public:
     &operator const KeyState() const {return this->ks;}
+
     virtual void _update(void);
+
     bool any_pressed(void);
+
     // modifiers
     inline bool any_shift_pressed(void) {
         return this->left.shift || this->right.shift;
     }
+
     inline bool any_ctrl_pressed(void) {
         return this->left.ctrl || this->right.ctrl;
     }
+
     inline bool any_alt_pressed(void) {
         return this->left.alt || this->right.alt;
     }
+
     inline bool modifier_is_pressed(void) {
         return (this->left.any_pressed() || this->right.any_pressed());
     }
+
     bool operator==(const KeyState &rhs) {return this->ks == rhs;}
 };
 

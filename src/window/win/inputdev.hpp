@@ -31,11 +31,14 @@ protected:
     struct {bool l, r, m, b1, b2;} pressed;
 public:
     void _update(void);
+
     bool has_pressed(void) {
         return (this->pressed.l || this->pressed.r || this->pressed.m ||
             this->pressed.b1 || this->pressed.b2);
     }
+
     bool button1_ispressed(void) {return this->pressed.b1;}
+
     bool button2_ispressed(void) {return this->pressed.b2;}
 };
 

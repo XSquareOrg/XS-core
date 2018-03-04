@@ -20,19 +20,19 @@
 
 #include "../buildkern/kern.h"
 
-#if defined(__KERN_OS_LINUX)
-    #if defined(__KERN_OS_ANDROID)
+#if defined(KERN_OS_LINUX)
+    #if defined(KERN_OS_ANDROID)
         #include "android/inputdev.hpp"
     #else
         #include "linux/inputdev.hpp"
     #endif
-#elif defined(__KERN_OS_WIN)
+#elif defined(KERN_OS_WIN)
     #include "win/inputdev.hpp"
-#elif defined(__KERN_OS_APPLE)
+#elif defined(KERN_OS_APPLE)
     #include "apple/inputdev.hpp"
 #endif
-//#else if defined(__KERN_OS_APPLE)
-//#else if defined(__KERN_OS_ANDROID)
+//#else if defined(KERN_OS_APPLE)
+//#else if defined(KERN_OS_ANDROID)
 
 namespace xs_core {
 
