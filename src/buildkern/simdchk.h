@@ -18,11 +18,12 @@
 #ifndef XS_SIMDCHK__
 #define XS_SIMDCHK__
 
-//#define HAS_SSE3__
-//#define HAS_SSSE3__
-//#define HAS_SSE4__
-//#define HAS_SSE4_1__
-//#define HAS_SSE4_2__
-//#define HAS_AVX512__
+//#define XS_KERN_HAS_SSE3
+//#define XS_KERN_HAS_SSSE3
+//#define XS_KERN_HAS_SSE4
+//#define XS_KERN_HAS_SSE4_1
+//#define XS_KERN_HAS_SSE4_2
+//#define XS_KERN_HAS_AVX256
+//#define XS_KERN_HAS_AVX512
 
 #endif
